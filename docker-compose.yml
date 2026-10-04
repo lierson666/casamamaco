@@ -16,6 +16,8 @@ services:
     environment:
       GATE_USER: ${GATE_USER:?defina GATE_USER no .env}
       GATE_HASH: ${GATE_HASH:?defina GATE_HASH no .env}
+      GATE_USER_B: ${GATE_USER_B:?defina GATE_USER_B no .env}
+      GATE_USER_C: ${GATE_USER_C:?defina GATE_USER_C no .env}
     ports:
       - "80:80"
       - "443:443"

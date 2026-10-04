@@ -26,7 +26,7 @@ export function ActionForm({
           </p>
         )}
         {state?.ok && (
-          <p role="status" className="text-sm text-pos">
+          <p role="status" className="break-words text-sm text-pos">
             {state.ok}
           </p>
         )}

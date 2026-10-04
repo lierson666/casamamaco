@@ -20,7 +20,25 @@ export const users = sqliteTable("users", {
   name: text("name").notNull(),
   email: text("email").notNull().unique(),
   passwordHash: text("password_hash").notNull(),
+  // Segundo fator (app autenticador). Conta só entra depois de ativada.
+  totpSecret: text("totp_secret"),
+  totpEnabled: integer("totp_enabled", { mode: "boolean" }).notNull().default(false),
+  totpLastStep: integer("totp_last_step").notNull().default(0),
+  // Link de ativação de uso único (guardamos só o hash).
+  activationHash: text("activation_hash"),
+  activationExpires: text("activation_expires"),
+  // Sobe quando a senha/2FA muda: derruba as sessões antigas.
+  sessionVersion: integer("session_version").notNull().default(1),
   createdAt: createdAt(),
+});
+
+export const recoveryCodes = sqliteTable("recovery_codes", {
+  id: integer("id").primaryKey({ autoIncrement: true }),
+  userId: integer("user_id")
+    .notNull()
+    .references(() => users.id),
+  codeHash: text("code_hash").notNull(),
+  usedAt: text("used_at"),
 });
 
 export const categories = sqliteTable("categories", {
@@ -134,3 +152,22 @@ export const settings = sqliteTable("settings", {
   key: text("key").primaryKey(),
   value: text("value").notNull(),
 });
+
+// Movimentos importados de bancos via API (ex.: Inter PJ). Ficam separados dos
+// lançamentos da casa para não misturar contas de empresa com os gastos da casa.
+export const bankEntries = sqliteTable(
+  "bank_entries",
+  {
+    id: integer("id").primaryKey({ autoIncrement: true }),
+    provider: text("provider").notNull().default("inter"),
+    extKey: text("ext_key").notNull(),
+    date: text("date").notNull(),
+    type: text("type", { enum: ["entrada", "saida"] }).notNull(),
+    amountCents: integer("amount_cents").notNull(),
+    description: text("description").notNull().default(""),
+  },
+  (t) => [
+    uniqueIndex("bank_entries_key_idx").on(t.provider, t.extKey),
+    index("bank_entries_date_idx").on(t.date),
+  ],
+);

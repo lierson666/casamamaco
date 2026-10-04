@@ -24,9 +24,9 @@ export default async function LoginPage() {
       </div>
       {noUsers ? (
         <p className="card p-4 text-sm text-muted">
-          Nenhum usuário cadastrado ainda. Crie o primeiro pelo servidor:
+          Nenhum usuário cadastrado ainda. Gere o link de ativação do primeiro pelo servidor:
           <code className="mt-2 block break-all text-ink">
-            docker compose exec app npm run user:create
+            docker compose exec -T app npm run user:link -- --nome SeuNome --email seu@email.com
           </code>
         </p>
       ) : (

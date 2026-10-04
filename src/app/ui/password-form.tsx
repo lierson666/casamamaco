@@ -13,8 +13,8 @@ export function PasswordForm() {
         <input name="current" type="password" autoComplete="current-password" required className="field" />
       </label>
       <label className="flex flex-col gap-1.5 text-sm font-medium">
-        Nova senha
-        <input name="next" type="password" autoComplete="new-password" minLength={8} required className="field" />
+        Nova senha (mín. 10 caracteres)
+        <input name="next" type="password" autoComplete="new-password" minLength={10} required className="field" />
       </label>
       {state?.error && (
         <p role="alert" className="text-sm text-neg">

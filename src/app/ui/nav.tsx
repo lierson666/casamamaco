@@ -36,7 +36,7 @@ export function BottomNav() {
   return (
     <nav
       aria-label="Seções"
-      className="fixed inset-x-0 bottom-0 z-20 border-t border-line bg-bg/95 pb-[env(safe-area-inset-bottom)] backdrop-blur md:hidden"
+      className="bottom-nav fixed inset-x-0 bottom-0 z-20 border-t border-line bg-bg/95 pb-[env(safe-area-inset-bottom)] backdrop-blur md:hidden"
     >
       <ul className="mx-auto grid max-w-lg grid-cols-5">
         {items.map((item) => {

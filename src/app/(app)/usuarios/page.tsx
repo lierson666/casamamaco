@@ -1,5 +1,6 @@
 import { addUser } from "@/app/actions/auth";
 import { AuthForm } from "@/app/ui/auth-form";
+import { PasswordForm } from "@/app/ui/password-form";
 import { db, schema } from "@/db";
 import { requireUser } from "@/lib/auth";
 
@@ -24,6 +25,10 @@ export default async function Usuarios() {
             </li>
           ))}
         </ul>
+      </section>
+      <section>
+        <h2 className="mb-3 text-sm font-medium text-muted">Trocar minha senha</h2>
+        <PasswordForm />
       </section>
       <section>
         <h2 className="mb-3 text-sm font-medium text-muted">Cadastrar outra pessoa</h2>

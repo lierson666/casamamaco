@@ -7,8 +7,8 @@ export default function manifest(): MetadataRoute.Manifest {
     description: "Gestão da casa: contas, caixa, gastos, orçamento e agenda.",
     start_url: "/",
     display: "standalone",
-    background_color: "#12291c",
-    theme_color: "#12291c",
+    background_color: "#fae9cf",
+    theme_color: "#fae9cf",
     lang: "pt-BR",
     icons: [
       { src: "/icons/icon-192.png", sizes: "192x192", type: "image/png" },

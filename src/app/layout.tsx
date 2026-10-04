@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Anton, DM_Sans, Fraunces } from "next/font/google";
+import { Frame } from "./ui/kv";
 import "./globals.css";
 
 const dmSans = DM_Sans({ variable: "--font-dm-sans", subsets: ["latin"] });
@@ -18,11 +19,11 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#12291c",
+  themeColor: "#fae9cf",
   viewportFit: "cover",
 };
 
-const theme = process.env.NEXT_PUBLIC_THEME === "cordel" ? "cordel" : "xepa";
+const theme = process.env.NEXT_PUBLIC_THEME === "xepa" ? "xepa" : "cordel";
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
@@ -31,7 +32,10 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       data-theme={theme}
       className={`${dmSans.variable} ${anton.variable} ${fraunces.variable} h-full antialiased`}
     >
-      <body className="flex min-h-full flex-col">{children}</body>
+      <body className="flex min-h-full flex-col">
+        <Frame />
+        {children}
+      </body>
     </html>
   );
 }

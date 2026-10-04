@@ -7,7 +7,7 @@ COPY package.json package-lock.json ./
 RUN npm ci
 COPY . .
 # Tema visual (xepa | cordel) é decidido no build.
-ARG NEXT_PUBLIC_THEME=xepa
+ARG NEXT_PUBLIC_THEME=cordel
 ENV NEXT_PUBLIC_THEME=$NEXT_PUBLIC_THEME
 # O build só precisa de um segredo qualquer; o real vem do .env em runtime.
 RUN SESSION_SECRET=build-only-build-only-build-only-0000 npm run build \

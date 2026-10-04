@@ -80,3 +80,28 @@ export async function addUser(_: FormState, formData: FormData): Promise<FormSta
     .run();
   return { ok: `${name} cadastrado(a).` };
 }
+
+const passwordChange = z.object({
+  current: z.string().min(1, "Informe a senha atual."),
+  next: z.string().min(8, "A nova senha precisa ter ao menos 8 caracteres."),
+});
+
+// Cada pessoa troca a própria senha (troca a provisória no primeiro acesso).
+export async function changePassword(_: FormState, formData: FormData): Promise<FormState> {
+  const me = await requireUser();
+  const parsed = passwordChange.safeParse(Object.fromEntries(formData));
+  if (!parsed.success) return { error: parsed.error.issues[0].message };
+  const { current, next } = parsed.data;
+
+  const user = db.select().from(schema.users).where(eq(schema.users.id, me.id)).get();
+  if (!user || !(await bcrypt.compare(current, user.passwordHash))) {
+    return { error: "A senha atual não confere." };
+  }
+  if (current === next) return { error: "A nova senha precisa ser diferente da atual." };
+
+  db.update(schema.users)
+    .set({ passwordHash: await bcrypt.hash(next, 12) })
+    .where(eq(schema.users.id, me.id))
+    .run();
+  return { ok: "Senha trocada." };
+}

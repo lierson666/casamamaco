@@ -34,6 +34,7 @@ db.insert(accounts)
   .values([
     { name: "Carteira (dinheiro)", type: "dinheiro" },
     { name: "Conta conjunta Inter", type: "banco" },
+    { name: "Cartão de crédito Bradesco", type: "cartao" },
   ])
   .onConflictDoNothing()
   .run();

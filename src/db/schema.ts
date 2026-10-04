@@ -34,7 +34,7 @@ export const categories = sqliteTable("categories", {
 export const accounts = sqliteTable("accounts", {
   id: integer("id").primaryKey({ autoIncrement: true }),
   name: text("name").notNull().unique(),
-  type: text("type", { enum: ["dinheiro", "banco"] }).notNull(),
+  type: text("type", { enum: ["dinheiro", "banco", "cartao"] }).notNull(),
   openingBalanceCents: integer("opening_balance_cents").notNull().default(0),
   archived: integer("archived", { mode: "boolean" }).notNull().default(false),
 });

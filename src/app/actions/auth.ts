@@ -1,7 +1,7 @@
 "use server";
 
 import bcrypt from "bcryptjs";
-import { count, eq } from "drizzle-orm";
+import { eq } from "drizzle-orm";
 import { redirect } from "next/navigation";
 import * as z from "zod";
 import { db, schema } from "@/db";
@@ -33,24 +33,6 @@ function registerFailure(email: string) {
   if (!a || Date.now() - a.since > WINDOW_MS) {
     attempts.set(email, { n: 1, since: Date.now() });
   } else a.n += 1;
-}
-
-const userCount = () => db.select({ n: count() }).from(schema.users).get()!.n;
-
-// Só funciona enquanto não existe nenhum usuário.
-export async function setup(_: FormState, formData: FormData): Promise<FormState> {
-  if (userCount() > 0) redirect("/login");
-  const parsed = newUser.safeParse(Object.fromEntries(formData));
-  if (!parsed.success) return { error: parsed.error.issues[0].message };
-
-  const { name, email, password } = parsed.data;
-  const user = db
-    .insert(schema.users)
-    .values({ name, email, passwordHash: await bcrypt.hash(password, 12) })
-    .returning({ id: schema.users.id })
-    .get();
-  await createSession(user.id);
-  redirect("/");
 }
 
 export async function login(_: FormState, formData: FormData): Promise<FormState> {

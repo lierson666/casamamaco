@@ -1,7 +1,7 @@
 // Dados iniciais da casa. Seguro rodar mais de uma vez: só insere o que falta
 // e só cadastra as dívidas se a tabela estiver vazia.
 // Não grava documentos pessoais (CPF/RG/dados bancários) nem usuários/senhas:
-// o primeiro acesso cria a conta em /setup.
+// as contas são criadas no servidor com `npm run user:create`.
 import { count, eq } from "drizzle-orm";
 import { db, schema } from "./index";
 

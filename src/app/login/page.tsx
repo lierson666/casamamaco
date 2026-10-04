@@ -10,9 +10,8 @@ export const dynamic = "force-dynamic";
 
 export default async function LoginPage() {
   if (await getCurrentUser()) redirect("/");
-  if (db.select({ n: count() }).from(schema.users).get()!.n === 0) {
-    redirect("/setup");
-  }
+  const noUsers = db.select({ n: count() }).from(schema.users).get()!.n === 0;
+
   return (
     <main className="mx-auto flex w-full max-w-sm flex-1 flex-col justify-center gap-6 px-4 py-12">
       <div className="flex flex-col items-start gap-5">
@@ -23,7 +22,16 @@ export default async function LoginPage() {
           <p className="mt-1 font-serif text-xl italic text-accent">a casa te espera.</p>
         </div>
       </div>
-      <AuthForm action={login} submitLabel="Entrar" />
+      {noUsers ? (
+        <p className="card p-4 text-sm text-muted">
+          Nenhum usuário cadastrado ainda. Crie o primeiro pelo servidor:
+          <code className="mt-2 block break-all text-ink">
+            docker compose exec app npm run user:create
+          </code>
+        </p>
+      ) : (
+        <AuthForm action={login} submitLabel="Entrar" />
+      )}
     </main>
   );
 }

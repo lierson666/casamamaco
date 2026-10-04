@@ -95,3 +95,36 @@ export async function setDebtPlan(_: FormState, formData: FormData): Promise<For
   refresh();
   return { ok: cents === 0 ? "Plano desligado." : "Plano atualizado." };
 }
+
+// Corrige credor, valor, dono e observação de uma dívida.
+export async function updateDebt(_: FormState, formData: FormData): Promise<FormState> {
+  await requireUser();
+  const p = z
+    .object({
+      debtId: idField,
+      creditor: z.string().trim().min(2, "Informe o credor.").max(100),
+      amount: moneyField("Valor inválido. Exemplo: 2500,00"),
+      owner: z.string().trim().min(2).max(40),
+      notes: z.string().trim().max(300).optional(),
+    })
+    .safeParse(Object.fromEntries(formData));
+  if (!p.success) return { error: p.error.issues[0].message };
+  const v = p.data;
+  const debt = debtWithRemaining(v.debtId);
+  if (!debt) return { error: "Dívida não encontrada." };
+  const cents = parseBRL(v.amount)!;
+  if (cents < debt.paidCents) return { error: "O valor não pode ser menor do que já foi pago nela." };
+  db.update(debts).set({ creditor: v.creditor, originalCents: cents, owner: v.owner, notes: v.notes || null }).where(eq(debts.id, v.debtId)).run();
+  refresh();
+  return { ok: "Dívida atualizada." };
+}
+
+// Remove uma dívida que ainda não tem pagamentos (ex.: cadastrada por engano ou que não é da casa).
+export async function deleteDebt(formData: FormData) {
+  await requireUser();
+  const debtId = Number(formData.get("id"));
+  if (!Number.isInteger(debtId) || debtId <= 0) return;
+  if (db.select().from(debtPayments).where(eq(debtPayments.debtId, debtId)).get()) return;
+  db.delete(debts).where(eq(debts.id, debtId)).run();
+  refresh();
+}

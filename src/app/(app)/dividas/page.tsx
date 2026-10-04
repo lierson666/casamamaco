@@ -1,5 +1,5 @@
 import { desc, eq } from "drizzle-orm";
-import { addDebt, payDebt, setDebtPlan, undoDebtPayment } from "@/app/actions/dividas";
+import { addDebt, deleteDebt, payDebt, setDebtPlan, undoDebtPayment, updateDebt } from "@/app/actions/dividas";
 import { ActionForm } from "@/app/ui/action-form";
 import { db, schema } from "@/db";
 import { requireUser } from "@/lib/auth";
@@ -37,6 +37,11 @@ export default async function Dividas() {
 
   return (
     <div className="flex flex-col gap-6">
+      <datalist id="donos">
+        {owners.map((o) => (
+          <option key={o} value={o} />
+        ))}
+      </datalist>
       <header>
         <p className="eyebrow">Dívidas</p>
         <h1 className="mt-2 font-display text-[clamp(2rem,9vw,3rem)] uppercase leading-none">Quanto falta</h1>
@@ -153,6 +158,36 @@ export default async function Dividas() {
                       </div>
                     </details>
                   )}
+                  <details className="w-full sm:w-auto">
+                    <summary className="btn-ghost inline-block cursor-pointer list-none text-sm">Editar</summary>
+                    <div className="card mt-2 p-4">
+                      <ActionForm action={updateDebt} submit="Salvar">
+                        <input type="hidden" name="debtId" value={d.id} />
+                        <label className="flex flex-col gap-1.5 text-sm font-medium sm:col-span-2">
+                          Credor
+                          <input name="creditor" required maxLength={100} defaultValue={d.creditor} className="field" />
+                        </label>
+                        <label className="flex flex-col gap-1.5 text-sm font-medium">
+                          Valor da dívida (R$)
+                          <input name="amount" required inputMode="decimal" defaultValue={centsToInput(d.originalCents)} className="field tabular-nums" />
+                        </label>
+                        <label className="flex flex-col gap-1.5 text-sm font-medium">
+                          De quem é
+                          <input name="owner" required maxLength={40} defaultValue={d.owner} list="donos" className="field" />
+                        </label>
+                        <label className="flex flex-col gap-1.5 text-sm font-medium sm:col-span-2">
+                          Observação
+                          <input name="notes" maxLength={300} defaultValue={d.notes ?? ""} className="field" />
+                        </label>
+                      </ActionForm>
+                      {mine.length === 0 && (
+                        <form action={deleteDebt} className="mt-3">
+                          <input type="hidden" name="id" value={d.id} />
+                          <button className="text-xs text-muted underline hover:text-neg">Remover esta dívida</button>
+                        </form>
+                      )}
+                    </div>
+                  </details>
                   {mine.length > 0 && (
                     <details className="w-full sm:w-auto">
                       <summary className="btn-ghost inline-block cursor-pointer list-none text-sm">Pagamentos ({mine.length})</summary>

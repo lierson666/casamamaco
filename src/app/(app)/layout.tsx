@@ -10,6 +10,7 @@ const nav = [
   { href: "/orcamento", label: "Orçamento" },
   { href: "/dividas", label: "Dívidas" },
   { href: "/agenda", label: "Agenda" },
+  { href: "/usuarios", label: "Usuários" },
 ];
 
 export default async function AppLayout({ children }: LayoutProps<"/">) {

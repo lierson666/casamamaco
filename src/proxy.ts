@@ -15,6 +15,9 @@ export async function proxy(request: NextRequest) {
   return NextResponse.next();
 }
 
+// Arquivos estáticos e do PWA (manifest, ícones) passam sem login.
 export const config = {
-  matcher: ["/((?!_next/static|_next/image|favicon.ico).*)"],
+  matcher: [
+    "/((?!_next/static|_next/image|favicon.ico|icon.png|apple-icon.png|manifest.webmanifest|icons/).*)",
+  ],
 };

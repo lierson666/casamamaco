@@ -1,6 +1,9 @@
 services:
   app:
-    build: .
+    build:
+      context: .
+      args:
+        NEXT_PUBLIC_THEME: ${NEXT_PUBLIC_THEME:-xepa}
     restart: unless-stopped
     env_file: .env
     volumes:

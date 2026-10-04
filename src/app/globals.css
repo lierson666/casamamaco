@@ -1,25 +1,132 @@
 @import "tailwindcss";
 
-:root {
-  --background: #fafaf9;
-  --foreground: #1c1917;
+/*
+ * TEMAS. O app inteiro usa só estas variáveis, então trocar o KV = trocar
+ * NEXT_PUBLIC_THEME (ou editar os valores abaixo).
+ *   xepa   → KV do site do Grupo XEPA (padrão, provisório)
+ *   cordel → KV da Casa Mamaco, baseado na xilogravura do Xepinha e do Oli
+ */
+:root,
+[data-theme="xepa"] {
+  --bg: #12291c;
+  --bg-glow: radial-gradient(1200px 600px at 70% -10%, #2b6a4a55, transparent 60%);
+  --surface: #1a3a28;
+  --surface-2: #23503a;
+  --ink: #f1e8d2;
+  --muted: #a8b8ab;
+  --line: #f1e8d224;
+  --accent: #f4c430;
+  --primary: #f1e8d2;
+  --on-primary: #12291c;
+  --pos: #7fd6a3;
+  --neg: #ff8a73;
+  --radius: 22px;
+  --border-w: 1px;
+}
+
+[data-theme="cordel"] {
+  --bg: #fae9cf;
+  --bg-glow: none;
+  --surface: #fff5e3;
+  --surface-2: #f1dcb8;
+  --ink: #14110f;
+  --muted: #6b5d4d;
+  --line: #14110f;
+  --accent: #c8601f;
+  --primary: #14110f;
+  --on-primary: #fae9cf;
+  --pos: #2f6b3a;
+  --neg: #b3361c;
+  --radius: 6px;
+  --border-w: 2px;
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0c0a09;
-    --foreground: #e7e5e4;
-  }
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-ink: var(--ink);
+  --color-muted: var(--muted);
+  --color-line: var(--line);
+  --color-accent: var(--accent);
+  --color-primary: var(--primary);
+  --color-on-primary: var(--on-primary);
+  --color-pos: var(--pos);
+  --color-neg: var(--neg);
+  --font-sans: var(--font-dm-sans);
+  --font-display: var(--font-anton);
+  --font-serif: var(--font-fraunces);
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: var(--font-sans), system-ui, sans-serif;
+  background: var(--bg-glow), var(--bg);
+  background-attachment: fixed;
+  color: var(--ink);
+  font-family: var(--font-dm-sans), system-ui, sans-serif;
+}
+
+@layer components {
+  .card {
+    background: var(--surface);
+    border: var(--border-w) solid var(--line);
+    border-radius: var(--radius);
+  }
+  .field {
+    width: 100%;
+    background: var(--surface);
+    color: var(--ink);
+    border: var(--border-w) solid var(--line);
+    border-radius: calc(var(--radius) / 2);
+    padding: 0.7rem 0.85rem;
+    font-size: 1rem;
+    outline: none;
+  }
+  .field:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 30%, transparent);
+  }
+  .btn {
+    background: var(--primary);
+    color: var(--on-primary);
+    border-radius: 999px;
+    padding: 0.7rem 1.25rem;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    transition: transform 0.12s ease, opacity 0.12s ease;
+  }
+  .btn:hover { transform: translateY(-1px); }
+  .btn:disabled { opacity: 0.6; transform: none; }
+  .btn-ghost {
+    border: var(--border-w) solid var(--line);
+    border-radius: 999px;
+    padding: 0.35rem 0.85rem;
+    font-size: 0.875rem;
+  }
+  .eyebrow {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+  .eyebrow::before {
+    content: "";
+    width: 2rem;
+    height: 2px;
+    background: var(--accent);
+  }
+  /* Faixa de triângulos da borda da xilogravura (só no tema cordel). */
+  .zigzag { display: none; }
+  [data-theme="cordel"] .zigzag {
+    display: block;
+    height: 14px;
+    background:
+      linear-gradient(135deg, var(--ink) 25%, transparent 25%) -7px 0,
+      linear-gradient(225deg, var(--ink) 25%, transparent 25%) -7px 0;
+    background-size: 14px 14px;
+    border-top: 2px solid var(--ink);
+  }
 }

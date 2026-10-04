@@ -1,22 +1,35 @@
 import type { Metadata, Viewport } from "next";
-import { Geist } from "next/font/google";
+import { Anton, DM_Sans, Fraunces } from "next/font/google";
 import "./globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const dmSans = DM_Sans({ variable: "--font-dm-sans", subsets: ["latin"] });
+const anton = Anton({ variable: "--font-anton", subsets: ["latin"], weight: "400" });
+const fraunces = Fraunces({
+  variable: "--font-fraunces",
   subsets: ["latin"],
+  style: ["normal", "italic"],
 });
 
 export const metadata: Metadata = {
   title: "Casa Mamaco",
   description: "Gestão da casa: contas, caixa, gastos, orçamento e agenda.",
+  appleWebApp: { capable: true, title: "Casa Mamaco", statusBarStyle: "black-translucent" },
 };
 
-export const viewport: Viewport = { themeColor: "#047857" };
+export const viewport: Viewport = {
+  themeColor: "#12291c",
+  viewportFit: "cover",
+};
+
+const theme = process.env.NEXT_PUBLIC_THEME === "cordel" ? "cordel" : "xepa";
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="pt-BR" className={`${geistSans.variable} h-full antialiased`}>
+    <html
+      lang="pt-BR"
+      data-theme={theme}
+      className={`${dmSans.variable} ${anton.variable} ${fraunces.variable} h-full antialiased`}
+    >
       <body className="flex min-h-full flex-col">{children}</body>
     </html>
   );

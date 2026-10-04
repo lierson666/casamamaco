@@ -15,18 +15,18 @@ export default async function Usuarios() {
   return (
     <div className="flex max-w-sm flex-col gap-8">
       <section>
-        <h2 className="mb-2 text-sm font-medium text-zinc-500">Quem tem acesso</h2>
-        <ul className="divide-y divide-zinc-200 rounded-xl border border-zinc-200 bg-white dark:divide-zinc-800 dark:border-zinc-800 dark:bg-zinc-900">
+        <h2 className="mb-2 text-sm font-medium text-muted">Quem tem acesso</h2>
+        <ul className="card divide-y divide-line overflow-hidden">
           {users.map((u) => (
             <li key={u.id} className="px-4 py-3">
               {u.name}
-              <span className="block text-xs text-zinc-500">{u.email}</span>
+              <span className="block text-xs text-muted">{u.email}</span>
             </li>
           ))}
         </ul>
       </section>
       <section>
-        <h2 className="mb-3 text-sm font-medium text-zinc-500">Cadastrar outra pessoa</h2>
+        <h2 className="mb-3 text-sm font-medium text-muted">Cadastrar outra pessoa</h2>
         <AuthForm action={addUser} submitLabel="Cadastrar" withName />
       </section>
     </div>

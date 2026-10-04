@@ -210,7 +210,7 @@ export default async function Contas({ searchParams }: PageProps<"/contas">) {
       <header className="flex flex-wrap items-end justify-between gap-4">
         <div>
           <p className="eyebrow">Contas a pagar</p>
-          <h1 className="mt-2 font-display text-5xl uppercase leading-none">{monthLabel(month)}</h1>
+          <h1 className="mt-2 font-display text-[clamp(2rem,9vw,3rem)] uppercase leading-none">{monthLabel(month)}</h1>
         </div>
         <nav aria-label="Mês" className="flex items-center gap-2 text-sm">
           <Link href={`/contas?mes=${shiftMonth(month, -1)}`} className="btn-ghost">
@@ -227,8 +227,8 @@ export default async function Contas({ searchParams }: PageProps<"/contas">) {
         </nav>
       </header>
 
-      <section className="grid gap-4 sm:grid-cols-3">
-        <div className="card p-5">
+      <section className="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4">
+        <div className="card col-span-2 p-5 sm:col-span-1">
           <h2 className="text-sm font-medium text-muted">Falta pagar</h2>
           <p className="mt-1 font-display text-4xl tabular-nums text-neg">{formatBRL(sum(unpaid))}</p>
           <p className="mt-1 text-xs text-muted">

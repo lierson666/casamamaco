@@ -11,6 +11,9 @@ const paths = {
   usuarios:
     "M16 20v-1a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4v1M9.5 11a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7zM21 20v-1a4 4 0 0 0-3-3.9M16 4.1a3.5 3.5 0 0 1 0 6.8",
   mais: "M5 12h.01M12 12h.01M19 12h.01",
+  novo: "M12 5v14M5 12h14",
+  sair: "M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9",
+  fechar: "M6 6l12 12M18 6L6 18",
 } as const;
 
 export type IconName = keyof typeof paths;
@@ -21,7 +24,7 @@ export function Icon({ name, className }: { name: IconName; className?: string }
       viewBox="0 0 24 24"
       fill="none"
       stroke="currentColor"
-      strokeWidth={name === "mais" ? 3 : 1.8}
+      strokeWidth={name === "mais" ? 3 : name === "novo" ? 2.4 : 1.8}
       strokeLinecap="round"
       strokeLinejoin="round"
       aria-hidden

@@ -81,7 +81,7 @@ export default async function Gastos({ searchParams }: PageProps<"/gastos">) {
       <header className="flex flex-wrap items-end justify-between gap-4">
         <div>
           <p className="eyebrow">Gastos do mês</p>
-          <h1 className="mt-2 font-display text-5xl uppercase leading-none">{monthLabel(month)}</h1>
+          <h1 className="mt-2 font-display text-[clamp(2rem,9vw,3rem)] uppercase leading-none">{monthLabel(month)}</h1>
         </div>
         <nav aria-label="Mês" className="flex items-center gap-2 text-sm">
           <Link href={`/gastos?mes=${shiftMonth(month, -1)}`} className="btn-ghost">
@@ -100,7 +100,7 @@ export default async function Gastos({ searchParams }: PageProps<"/gastos">) {
 
       <section className="card p-5">
         <h2 className="text-sm font-medium text-muted">Total gasto no mês</h2>
-        <p className="mt-1 font-display text-5xl tabular-nums text-neg">{formatBRL(total)}</p>
+        <p className="mt-1 font-display text-[clamp(2.2rem,10vw,3rem)] tabular-nums text-neg">{formatBRL(total)}</p>
         <p className="mt-1 text-sm text-muted">
           {rows.length} {rows.length === 1 ? "lançamento" : "lançamentos"}
         </p>

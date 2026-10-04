@@ -11,26 +11,34 @@ export function ExpenseForm({
   users,
   me,
   today,
+  onSaved,
+  autoFocus,
 }: {
   categories: Option[];
   accounts: Option[];
   users: Option[];
   me: number;
   today: string;
+  onSaved?: () => void;
+  autoFocus?: boolean;
 }) {
   const [state, formAction, pending] = useActionState(addExpense, undefined);
   const ref = useRef<HTMLFormElement>(null);
 
   // Limpa o formulário depois de salvar (a data, a conta e quem pagou voltam ao padrão).
   useEffect(() => {
-    if (state?.ok) ref.current?.reset();
-  }, [state]);
+    if (!state?.ok) return;
+    ref.current?.reset();
+    if (!onSaved) return;
+    const t = setTimeout(onSaved, 700); // deixa ver "Gasto registrado." antes de fechar
+    return () => clearTimeout(t);
+  }, [state, onSaved]);
 
   return (
     <form ref={ref} action={formAction} className="grid gap-4 sm:grid-cols-2">
       <label className="flex flex-col gap-1.5 text-sm font-medium sm:col-span-2">
         O que foi o gasto?
-        <input name="description" required maxLength={120} placeholder="Ex.: Mercado, farmácia, gás" className="field" />
+        <input name="description" required maxLength={120} autoFocus={autoFocus} placeholder="Ex.: Mercado, farmácia, gás" className="field" />
       </label>
       <label className="flex flex-col gap-1.5 text-sm font-medium">
         Valor (R$)

@@ -1,18 +1,19 @@
 import type { IconName } from "@/app/ui/icons";
 
-export type NavItem = { href: string; label: string; icon: IconName };
+export type NavItem = { href: string; label: string; short: string; icon: IconName };
 
 export const navItems: NavItem[] = [
-  { href: "/", label: "Painel", icon: "painel" },
-  { href: "/contas", label: "Contas a pagar", icon: "contas" },
-  { href: "/caixa", label: "Caixa", icon: "caixa" },
-  { href: "/gastos", label: "Gastos", icon: "gastos" },
-  { href: "/orcamento", label: "Orçamento", icon: "orcamento" },
-  { href: "/dividas", label: "Dívidas", icon: "dividas" },
-  { href: "/agenda", label: "Agenda", icon: "agenda" },
-  { href: "/usuarios", label: "Usuários", icon: "usuarios" },
+  { href: "/", label: "Painel", short: "Painel", icon: "painel" },
+  { href: "/contas", label: "Contas a pagar", short: "Contas", icon: "contas" },
+  { href: "/gastos", label: "Gastos", short: "Gastos", icon: "gastos" },
+  { href: "/caixa", label: "Caixa", short: "Caixa", icon: "caixa" },
+  { href: "/orcamento", label: "Orçamento", short: "Orçamento", icon: "orcamento" },
+  { href: "/dividas", label: "Dívidas", short: "Dívidas", icon: "dividas" },
+  { href: "/agenda", label: "Agenda", short: "Agenda", icon: "agenda" },
+  { href: "/usuarios", label: "Usuários", short: "Usuários", icon: "usuarios" },
 ];
 
-// No celular: 4 atalhos na barra de baixo + "Mais" (o resto fica em /mais).
-export const bottomItems = navItems.slice(0, 4);
-export const moreItems = navItems.slice(4);
+// Barra do celular: Painel, Contas, [+ novo gasto no centro], Gastos, Mais.
+export const tabLeft = navItems.slice(0, 2);
+export const tabRight = navItems.slice(2, 3);
+export const moreItems = navItems.slice(3);

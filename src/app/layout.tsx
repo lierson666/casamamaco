@@ -15,7 +15,7 @@ export const metadata: Metadata = {
   title: "Casa Mamaco",
   description: "Gestão da casa: contas, caixa, gastos, orçamento e agenda.",
   robots: { index: false, follow: false, nocache: true },
-  appleWebApp: { capable: true, title: "Casa Mamaco", statusBarStyle: "black-translucent" },
+  appleWebApp: { capable: true, title: "Casa Mamaco", statusBarStyle: "default" },
 };
 
 export const viewport: Viewport = {

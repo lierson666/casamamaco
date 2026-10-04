@@ -1,5 +1,6 @@
 import { eq, sql } from "drizzle-orm";
 import { Kv } from "@/app/ui/kv";
+import { NewExpenseButton } from "@/app/ui/new-expense-button";
 import { db, schema } from "@/db";
 import { formatBRL } from "@/lib/money";
 
@@ -28,6 +29,8 @@ export default function Painel() {
       <Kv eyebrow="Casa Mamaco · São Paulo" title="A casa em ordem" accent="sem susto no fim do mês.">
         Contas, caixa, gastos e dívidas num lugar só.
       </Kv>
+
+      <NewExpenseButton className="w-full sm:w-auto sm:self-start" />
 
       <section className="grid gap-4 lg:grid-cols-3">
         <div className="card min-w-0 p-5 lg:col-span-1">

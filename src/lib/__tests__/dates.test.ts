@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { addDays, dueDateFor, formatDay, isMonth, monthLabel, shiftMonth } from "../dates";
+import { addDays, dueDateFor, formatDay, isMonth, monthLabel, monthShort, shiftMonth } from "../dates";
 
 describe("shiftMonth", () => {
   it("avança e volta atravessando o ano", () => {
@@ -47,5 +47,13 @@ describe("addDays", () => {
     expect(addDays("2026-10-28", 7)).toBe("2026-11-04");
     expect(addDays("2026-12-30", 3)).toBe("2027-01-02");
     expect(addDays("2026-03-01", -1)).toBe("2026-02-28");
+  });
+});
+
+describe("monthShort", () => {
+  it("abreviação em português para os eixos dos gráficos", () => {
+    expect(monthShort("2026-01")).toBe("jan");
+    expect(monthShort("2026-10")).toBe("out");
+    expect(monthShort("2026-12")).toBe("dez");
   });
 });

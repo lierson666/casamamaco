@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { eq } from "drizzle-orm";
+import { BarsChart, DonutChart } from "@/app/ui/charts";
 import { Kv } from "@/app/ui/kv";
 import { NewExpenseButton } from "@/app/ui/new-expense-button";
 import { db, schema } from "@/db";
@@ -10,7 +11,8 @@ import { forecastBalance } from "@/lib/caixa";
 import { addDays, currentMonth, formatDay, monthLabel, today } from "@/lib/dates";
 import { projectPayoff } from "@/lib/debt-plan";
 import { formatBRL } from "@/lib/money";
-import { accountBalances, debtsWithRemaining, dueByDate, expenseCategories, spentByCategory, unpaidBillsUpTo } from "@/lib/queries";
+import { lastMonths, seriesByMonth, shares } from "@/lib/report";
+import { accountBalances, debtsWithRemaining, dueByDate, expenseCategories, monthlyTotals, spentByCategory, spentByCategoryName, unpaidBillsUpTo } from "@/lib/queries";
 import { DEBT_MONTHLY_KEY, getSetting } from "@/lib/settings";
 
 export const dynamic = "force-dynamic";
@@ -60,6 +62,11 @@ export default async function Painel() {
   const alerts = cats
     .map((c) => ({ name: c.name, s: budgetStatus(limits.get(c.id), spent.get(c.id) ?? 0), spent: spent.get(c.id) ?? 0, limit: limits.get(c.id) ?? 0 }))
     .filter((r) => r.s.level === "warn" || r.s.level === "over");
+
+  // Gráficos: gasto por categoria (mês) e entradas x saídas (6 meses)
+  const slices = shares(spentByCategoryName(month), 5);
+  const months = lastMonths(month, 6);
+  const series = seriesByMonth(monthlyTotals(months), months);
 
   // 4) Dívidas e plano
   const debts = debtsWithRemaining();
@@ -140,6 +147,15 @@ export default async function Painel() {
           ) : (
             <p className="mt-1 text-xs text-muted">Sem tetos definidos. Defina em Orçamento.</p>
           )}
+        </Card>
+      </div>
+
+      <div className="grid gap-6 lg:grid-cols-2">
+        <Card title="Para onde foi o dinheiro" href="/relatorio">
+          <DonutChart slices={slices} centerTop={formatBRL(spentTotal)} centerBottom="gasto no mês" />
+        </Card>
+        <Card title="Entradas e saídas, 6 meses" href="/relatorio">
+          <BarsChart data={series} />
         </Card>
       </div>
 

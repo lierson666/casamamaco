@@ -33,3 +33,13 @@ export function parseSignedBRL(input: string): number | null {
   const cents = parseBRL(abs);
   return cents === null ? null : negative ? -cents : cents;
 }
+
+// "R$ 500", "R$ 1,5 mil", "R$ 12 mil", "R$ 2,5 mi" (rótulos curtos de gráfico).
+export function formatCompact(cents: number): string {
+  const sign = cents < 0 ? "-" : "";
+  const reais = Math.abs(cents) / 100;
+  const fmt = (n: number) => (Number.isInteger(n) ? String(n) : n.toFixed(1).replace(".", ","));
+  if (reais >= 1_000_000) return `${sign}R$ ${fmt(Math.round(reais / 100_000) / 10)} mi`;
+  if (reais >= 1_000) return `${sign}R$ ${fmt(Math.round(reais / 100) / 10)} mil`;
+  return `${sign}R$ ${fmt(Math.round(reais))}`;
+}

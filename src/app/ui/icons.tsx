@@ -14,6 +14,7 @@ const paths = {
   novo: "M12 5v14M5 12h14",
   sair: "M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9",
   fechar: "M6 6l12 12M18 6L6 18",
+  relatorio: "M3 3v18h18M7 15l4-4 3 3 5-6",
   plug: "M9 2v6M15 2v6M7 8h10v4a5 5 0 0 1-10 0zM12 17v5",
 } as const;
 

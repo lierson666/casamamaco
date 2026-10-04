@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { centsToInput, formatBRL, parseBRL, parseSignedBRL } from "../money";
+import { centsToInput, formatBRL, formatCompact, parseBRL, parseSignedBRL } from "../money";
 
 describe("parseBRL", () => {
   it.each([
@@ -47,5 +47,18 @@ describe("parseSignedBRL (saldo inicial: aceita zero e negativo)", () => {
   });
   it.each(["", "abc", "--5", "--0", "-0-", "1,2,3", "12,345", "-"])("recusa %j", (input) => {
     expect(parseSignedBRL(input)).toBeNull();
+  });
+});
+
+describe("formatCompact (eixos de gráfico)", () => {
+  it.each([
+    [0, "R$ 0"],
+    [50_000, "R$ 500"],
+    [150_000, "R$ 1,5 mil"],
+    [1_200_000, "R$ 12 mil"],
+    [250_000_000, "R$ 2,5 mi"],
+    [-150_000, "-R$ 1,5 mil"],
+  ])("%d vira %s", (cents, text) => {
+    expect(formatCompact(cents)).toBe(text);
   });
 });

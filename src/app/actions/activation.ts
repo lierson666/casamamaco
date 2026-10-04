@@ -26,7 +26,7 @@ export async function activateAccount(_: FormState, formData: FormData): Promise
   if (password !== again) return { error: "As duas senhas não conferem." };
   const local = user.email.split("@")[0].toLowerCase();
   if (local.length >= 5 && password.toLowerCase().includes(local)) return { error: "A senha não pode conter o seu e-mail." };
-  if (await bcrypt.compare(password, user.passwordHash)) return { error: "Escolha uma senha diferente da anterior." };
+  // A senha pode ser a mesma de antes: a conta só entra com o código do autenticador (2º fator).
 
   const step = user.totpSecret ? checkTotp(user.totpSecret, String(formData.get("code") ?? "")) : null;
   if (step === null) {

@@ -315,3 +315,14 @@ body {
   select.field { padding-right: 2rem; }
   .card { border-radius: min(var(--radius), 18px); }
 }
+
+/* ===== Paleta dos gráficos (por tema) ===== */
+:root,
+[data-theme="xepa"] {
+  --c1: #f4c430; --c2: #3f9a6a; --c3: #4d8db3; --c4: #e2553d;
+  --c5: #c9b88a; --c6: #7d5ba6; --c7: #9bc4a5; --c8: #8b9a90;
+}
+[data-theme="cordel"] {
+  --c1: #c8601f; --c2: #14110f; --c3: #d9a441; --c4: #5b7a3a;
+  --c5: #9c3b22; --c6: #3f6f73; --c7: #7a6a55; --c8: #b5a48a;
+}

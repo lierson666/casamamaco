@@ -5,7 +5,7 @@ import { cache } from "react";
 import { db, schema } from "@/db";
 import { SESSION_COOKIE, verifySession } from "./session";
 
-// Usuário da sessão atual. Só vale se a conta está ativada (2FA) e a versão da sessão confere.
+// Usuário da sessão atual. Só vale se a versão da sessão confere (trocar senha/2FA derruba as antigas).
 export const getCurrentUser = cache(async () => {
   const session = await verifySession((await cookies()).get(SESSION_COOKIE)?.value);
   if (!session) return null;
@@ -14,13 +14,12 @@ export const getCurrentUser = cache(async () => {
       id: schema.users.id,
       name: schema.users.name,
       email: schema.users.email,
-      enabled: schema.users.totpEnabled,
       sv: schema.users.sessionVersion,
     })
     .from(schema.users)
     .where(eq(schema.users.id, session.userId))
     .get();
-  if (!u || !u.enabled || u.sv !== session.sv) return null;
+  if (!u || u.sv !== session.sv) return null;
   return { id: u.id, name: u.name, email: u.email, sv: u.sv };
 });
 

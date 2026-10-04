@@ -22,7 +22,7 @@ const credentials = z.object({
   password: z.string().min(1),
 });
 
-// Passo 1: e-mail e senha. Conta ativada segue para o código do autenticador.
+// Passo 1: e-mail e senha. Se a conta tem autenticador ligado, segue para o código; senão, entra.
 export async function login(_: FormState, formData: FormData): Promise<FormState> {
   const parsed = credentials.safeParse(Object.fromEntries(formData));
   if (!parsed.success) return { error: "E-mail ou senha incorretos." };
@@ -39,11 +39,13 @@ export async function login(_: FormState, formData: FormData): Promise<FormState
     return { error: "E-mail ou senha incorretos." };
   }
   limit.clear(`login:${email}`);
-  if (!user.totpEnabled) {
-    return { error: "Esta conta ainda não foi ativada. Use o link de ativação que você recebeu (ou peça um novo)." };
+  // Autenticador é opcional: quem ligou, digita o código; quem não ligou, entra só com a senha.
+  if (user.totpEnabled) {
+    await createMfaPending(user.id);
+    redirect("/login/2fa");
   }
-  await createMfaPending(user.id);
-  redirect("/login/2fa");
+  await createSession(user.id, user.sessionVersion);
+  redirect("/");
 }
 
 // Passo 2: código de 6 dígitos do autenticador ou um código de recuperação.
@@ -131,26 +133,26 @@ export async function regenerateRecovery(_: FormState, formData: FormData): Prom
 const newUser = z.object({
   name: z.string().trim().min(2, "Informe o nome."),
   email: z.email("E-mail inválido.").trim().toLowerCase(),
+  password: z.string().min(MIN_PASSWORD, `A senha precisa ter ao menos ${MIN_PASSWORD} caracteres.`),
 });
 
-// Cadastra outra pessoa: gera um link de ativação (a pessoa define a própria senha e o autenticador).
+// Cadastra outra pessoa, já com a senha escolhida.
 export async function addUser(_: FormState, formData: FormData): Promise<FormState> {
   await requireUser();
   const parsed = newUser.safeParse(Object.fromEntries(formData));
   if (!parsed.success) return { error: parsed.error.issues[0].message };
-  const { name, email } = parsed.data;
+  const { name, email, password } = parsed.data;
   if (db.select().from(users).where(eq(users.email, email)).get()) return { error: "Já existe um usuário com esse e-mail." };
 
-  const unusable = await bcrypt.hash(randomBytes(32).toString("hex"), 12);
-  const u = db.insert(users).values({ name, email, passwordHash: unusable }).returning({ id: users.id }).get();
-  return { ok: `${name} cadastrado(a). Link de ativação (vale 24 h, uso único): ${issueActivation(u.id)}` };
+  db.insert(users).values({ name, email, passwordHash: await bcrypt.hash(password, 12) }).run();
+  return { ok: `${name} cadastrado(a). Já pode entrar com o e-mail e a senha.` };
 }
 
-// Quem perdeu o celular/senha: outra pessoa gera um novo link (zera o autenticador e derruba as sessões).
+// Link para ligar o autenticador (opcional) ou refazê-lo: zera o autenticador e derruba as sessões da pessoa.
 export async function createActivationLink(_: FormState, formData: FormData): Promise<FormState> {
   const me = await requireUser();
   const id = Number(formData.get("userId"));
-  if (!Number.isInteger(id) || id <= 0 || id === me.id) return { error: "Escolha outra pessoa. O seu próprio acesso você troca em 'Trocar minha senha'." };
+  if (!Number.isInteger(id) || id <= 0) return { error: "Pessoa inválida." };
   const target = db.select().from(users).where(eq(users.id, id)).get();
   if (!target) return { error: "Usuário não encontrado." };
   return { ok: `Link para ${target.name} (vale 24 h, uso único): ${issueActivation(id)}` };

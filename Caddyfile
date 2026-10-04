@@ -4,20 +4,7 @@ casamamaco.com.br {
 		X-Robots-Tag "noindex, nofollow, noarchive, nosnippet, noimageindex"
 		Strict-Transport-Security "max-age=31536000"
 	}
-
-	# Segundo cadeado: usuário e senha do navegador antes de qualquer página (inclusive o login).
-	# Ficam de fora só os arquivos que o navegador busca sem senha para instalar o app (ícones, manifest).
-	@fechado not path /manifest.webmanifest /icons/* /icon.png /apple-icon.png /favicon.ico /robots.txt
-	# Mesma senha, três nomes de usuário aceitos: "casa" e o e-mail de cada um.
-	basic_auth @fechado {
-		{$GATE_USER} {$GATE_HASH}
-		{$GATE_USER_B} {$GATE_HASH}
-		{$GATE_USER_C} {$GATE_HASH}
-	}
-
-	reverse_proxy app:3000 {
-		header_up -Authorization
-	}
+	reverse_proxy app:3000
 }
 
 www.casamamaco.com.br {

@@ -45,7 +45,7 @@ describe("parseSignedBRL (saldo inicial: aceita zero e negativo)", () => {
   ])("lê %s como %d", (input, cents) => {
     expect(parseSignedBRL(input)).toBe(cents);
   });
-  it.each(["", "abc", "--5", "1,2,3", "12,345", "-"])("recusa %j", (input) => {
+  it.each(["", "abc", "--5", "--0", "-0-", "1,2,3", "12,345", "-"])("recusa %j", (input) => {
     expect(parseSignedBRL(input)).toBeNull();
   });
 });

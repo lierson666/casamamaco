@@ -6,18 +6,13 @@ import * as z from "zod";
 import { db, schema } from "@/db";
 import { requireUser } from "@/lib/auth";
 import { installmentDueDates, installmentName, MAX_INSTALLMENTS, splitInstallments } from "@/lib/installments";
+import { accountById, userExists } from "@/lib/lookup";
 import { parseBRL } from "@/lib/money";
+import { idField, isoDate, moneyField, optionalDate, optionalMoney } from "@/lib/validation";
 import type { FormState } from "./auth";
 
-const { bills, billTemplates, transactions, accounts, users } = schema;
+const { bills, billTemplates, transactions } = schema;
 
-const optionalMoney = z
-  .string()
-  .trim()
-  .refine((v) => v === "" || parseBRL(v) !== null, "Valor inválido. Exemplo: 125,90");
-const isoDate = z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "Data inválida.");
-const optionalDate = z.string().refine((v) => v === "" || /^\d{4}-\d{2}-\d{2}$/.test(v), "Data inválida.");
-const id = z.coerce.number().int().positive();
 
 const refresh = () => {
   revalidatePath("/contas");
@@ -28,7 +23,7 @@ const refresh = () => {
 export async function updateBill(_: FormState, formData: FormData): Promise<FormState> {
   await requireUser();
   const p = z
-    .object({ id, amount: optionalMoney, dueDate: optionalDate })
+    .object({ id: idField, amount: optionalMoney, dueDate: optionalDate })
     .safeParse(Object.fromEntries(formData));
   if (!p.success) return { error: p.error.issues[0].message };
   const bill = db.select().from(bills).where(eq(bills.id, p.data.id)).get();
@@ -54,11 +49,11 @@ export async function payBill(_: FormState, formData: FormData): Promise<FormSta
   await requireUser();
   const p = z
     .object({
-      id,
-      accountId: id.refine(() => true),
-      paidBy: id,
+      id: idField,
+      accountId: idField,
+      paidBy: idField,
       date: isoDate,
-      amount: z.string().refine((v) => parseBRL(v) !== null, "Informe o valor pago. Exemplo: 125,90"),
+      amount: moneyField("Informe o valor pago. Exemplo: 125,90"),
     })
     .safeParse(Object.fromEntries(formData));
   if (!p.success) return { error: p.error.issues[0].message };
@@ -67,8 +62,8 @@ export async function payBill(_: FormState, formData: FormData): Promise<FormSta
   const bill = db.select().from(bills).where(eq(bills.id, v.id)).get();
   if (!bill) return { error: "Conta não encontrada." };
   if (bill.paidAt) return { error: "Esta conta já está paga." };
-  if (!db.select().from(accounts).where(eq(accounts.id, v.accountId)).get()) return { error: "Escolha de qual conta saiu." };
-  if (!db.select().from(users).where(eq(users.id, v.paidBy)).get()) return { error: "Escolha quem pagou." };
+  if (!accountById(v.accountId)) return { error: "Escolha de qual conta saiu." };
+  if (!userExists(v.paidBy)) return { error: "Escolha quem pagou." };
 
   const cents = parseBRL(v.amount)!;
   db.transaction((tx) => {

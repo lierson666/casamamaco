@@ -47,17 +47,18 @@ export async function suggestLimits(_: FormState, formData: FormData): Promise<F
   const month = String(formData.get("month") ?? "");
   if (!isMonth(month)) return { error: "Mês inválido." };
 
-  const history = [shiftMonth(month, -2), shiftMonth(month, -1)].map(spentByCategory);
+  // Só entram meses em que houve algum gasto (o app pode ter começado há pouco); nesses, categoria sem gasto vale zero.
+  const history = [shiftMonth(month, -2), shiftMonth(month, -1)].map(spentByCategory).filter((h) => [...h.values()].some((v) => v > 0));
   const existing = new Set(db.select().from(budgets).where(eq(budgets.month, month)).all().map((b) => b.categoryId));
   let created = 0;
-  for (const c of expenseCategories()) {
-    if (existing.has(c.id)) continue;
-    const spent = history.map((h) => h.get(c.id) ?? 0).filter((x) => x > 0);
-    const limit = suggestLimit(spent);
-    if (limit === null) continue;
-    db.insert(budgets).values({ categoryId: c.id, month, limitCents: limit }).run();
-    created++;
-  }
+  db.transaction((tx) => {
+    for (const c of expenseCategories()) {
+      if (existing.has(c.id)) continue;
+      const limit = suggestLimit(history.map((h) => h.get(c.id) ?? 0));
+      if (limit === null) continue;
+      created += tx.insert(budgets).values({ categoryId: c.id, month, limitCents: limit }).onConflictDoNothing().run().changes;
+    }
+  });
   refresh();
   return created > 0
     ? { ok: `${created} ${created === 1 ? "teto sugerido" : "tetos sugeridos"} pelo histórico. Ajuste como quiser.` }

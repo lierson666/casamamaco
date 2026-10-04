@@ -33,9 +33,9 @@ export async function syncInter(days = 30): Promise<SyncResult> {
   return { saldoCents, fetched: entries.length, inserted };
 }
 
-export const lastInterSync = () => ({
-  saldoCents: getSetting(INTER_SALDO_KEY) == null ? null : Number(getSetting(INTER_SALDO_KEY)),
-  syncedAt: getSetting(INTER_SYNC_KEY),
-});
+export function lastInterSync() {
+  const saldo = getSetting(INTER_SALDO_KEY);
+  return { saldoCents: saldo == null ? null : Number(saldo), syncedAt: getSetting(INTER_SYNC_KEY) };
+}
 
 export const interEntryCount = () => db.select({ n: sql<number>`count(*)` }).from(schema.bankEntries).get()!.n;

@@ -10,7 +10,7 @@ import { forecastBalance } from "@/lib/caixa";
 import { addDays, currentMonth, formatDay, monthLabel, today } from "@/lib/dates";
 import { projectPayoff } from "@/lib/debt-plan";
 import { formatBRL } from "@/lib/money";
-import { accountBalances, debtsWithRemaining, dueByDate, expenseCategories, spentByCategory, unpaidBills } from "@/lib/queries";
+import { accountBalances, debtsWithRemaining, dueByDate, expenseCategories, spentByCategory, unpaidBillsUpTo } from "@/lib/queries";
 import { DEBT_MONTHLY_KEY, getSetting } from "@/lib/settings";
 
 export const dynamic = "force-dynamic";
@@ -44,8 +44,9 @@ export default async function Painel() {
   // 2) Saldo atual e previsto
   const cash = accountBalances().filter((a) => a.type !== "cartao");
   const total = cash.reduce((s, a) => s + a.balanceCents, 0);
-  const open = unpaidBills(month);
+  const open = unpaidBillsUpTo(month); // abertas do mês + atrasadas de meses anteriores
   const openSum = open.reduce((s, b) => s + (b.amountCents ?? 0), 0);
+  const noValue = open.filter((b) => b.amountCents == null).length;
   const forecast = forecastBalance(total, openSum);
 
   // 3) Gasto do mês x orçamento
@@ -112,7 +113,7 @@ export default async function Painel() {
           <p className={`font-display text-[clamp(2rem,9vw,2.6rem)] tabular-nums ${total < 0 ? "text-neg" : ""}`}>{formatBRL(total)}</p>
           <p className={`mt-1 text-sm tabular-nums ${forecast < 0 ? "text-neg" : "text-pos"}`}>
             Previsto: {formatBRL(forecast)}
-            <span className="block text-xs text-muted">depois de {formatBRL(openSum)} em contas abertas de {monthLabel(month)}</span>
+            <span className="block text-xs text-muted">depois de {formatBRL(openSum)} em contas abertas e atrasadas{noValue > 0 && ` (+${noValue} sem valor definido)`}</span>
           </p>
         </Card>
 

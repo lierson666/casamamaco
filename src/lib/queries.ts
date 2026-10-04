@@ -1,4 +1,4 @@
-import { and, asc, eq, gte, lt, sql } from "drizzle-orm";
+import { and, asc, eq, gte, lt, lte, sql } from "drizzle-orm";
 import { db, schema } from "@/db";
 import { accountBalance } from "./caixa";
 import { shiftMonth } from "./dates";
@@ -46,27 +46,30 @@ export function expenseCategories() {
   return db.select().from(categories).where(and(eq(categories.kind, "despesa"), eq(categories.archived, false))).orderBy(asc(categories.id)).all();
 }
 
+const billCols = { id: bills.id, name: bills.name, dueDate: bills.dueDate, amountCents: bills.amountCents };
+const unpaid = sql`${bills.paidAt} is null`;
+
 // Contas do mês ainda não pagas (já geradas).
 export function unpaidBills(month: string) {
+  return db.select(billCols).from(bills).where(and(eq(bills.competence, month), unpaid)).orderBy(asc(bills.dueDate), asc(bills.id)).all();
+}
+
+// Contas não pagas até o mês informado (inclui atrasadas de meses anteriores): base do saldo previsto.
+export function unpaidBillsUpTo(month: string) {
+  return db.select(billCols).from(bills).where(and(lte(bills.competence, month), unpaid)).orderBy(asc(bills.dueDate), asc(bills.id)).all();
+}
+
+// Contas não pagas atrasadas ou vencendo até `limitIso`, de qualquer mês.
+export function dueByDate(limitIso: string) {
   return db
-    .select({ id: bills.id, name: bills.name, dueDate: bills.dueDate, amountCents: bills.amountCents })
+    .select(billCols)
     .from(bills)
-    .where(and(eq(bills.competence, month), sql`${bills.paidAt} is null`))
+    .where(and(unpaid, sql`${bills.dueDate} is not null`, sql`${bills.dueDate} <= ${limitIso}`))
     .orderBy(asc(bills.dueDate), asc(bills.id))
     .all();
 }
 
-// Todas as contas em atraso, de qualquer mês.
-export function overdueBills(todayIso: string) {
-  return db
-    .select({ id: bills.id, name: bills.name, dueDate: bills.dueDate, amountCents: bills.amountCents })
-    .from(bills)
-    .where(and(sql`${bills.paidAt} is null`, sql`${bills.dueDate} is not null`, lt(bills.dueDate, todayIso)))
-    .orderBy(asc(bills.dueDate))
-    .all();
-}
-
-export function debtsWithRemaining() {
+export function debtsWithRemaining(onlyId?: number) {
   return db
     .select({
       id: debts.id,
@@ -78,18 +81,13 @@ export function debtsWithRemaining() {
     })
     .from(debts)
     .leftJoin(debtPayments, eq(debtPayments.debtId, debts.id))
+    .where(onlyId === undefined ? undefined : eq(debts.id, onlyId))
     .groupBy(debts.id)
     .orderBy(asc(debts.id))
     .all()
     .map((d) => ({ ...d, remainingCents: d.originalCents - d.paidCents }));
 }
 
-// Contas não pagas atrasadas ou vencendo até `limitIso`, de qualquer mês.
-export function dueByDate(limitIso: string) {
-  return db
-    .select({ id: bills.id, name: bills.name, dueDate: bills.dueDate, amountCents: bills.amountCents })
-    .from(bills)
-    .where(and(sql`${bills.paidAt} is null`, sql`${bills.dueDate} is not null`, sql`${bills.dueDate} <= ${limitIso}`))
-    .orderBy(asc(bills.dueDate), asc(bills.id))
-    .all();
+export function debtWithRemaining(id: number) {
+  return debtsWithRemaining(id)[0];
 }

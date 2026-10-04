@@ -5,13 +5,14 @@ import { revalidatePath } from "next/cache";
 import * as z from "zod";
 import { db, schema } from "@/db";
 import { requireUser } from "@/lib/auth";
+import { accountById, userExists } from "@/lib/lookup";
 import { parseBRL, parseSignedBRL } from "@/lib/money";
-import { debtsWithRemaining } from "@/lib/queries";
+import { debtWithRemaining } from "@/lib/queries";
 import { DEBT_MONTHLY_KEY, setSetting } from "@/lib/settings";
+import { idField, isoDate, moneyField } from "@/lib/validation";
 import type { FormState } from "./auth";
 
-const { debts, debtPayments, transactions, accounts, users, categories } = schema;
-const id = z.coerce.number().int().positive();
+const { debts, debtPayments, transactions, categories } = schema;
 
 const refresh = () => {
   revalidatePath("/dividas");
@@ -24,9 +25,9 @@ export async function payDebt(_: FormState, formData: FormData): Promise<FormSta
   await requireUser();
   const p = z
     .object({
-      debtId: id,
-      amount: z.string().refine((v) => parseBRL(v) !== null, "Informe o valor pago. Exemplo: 1000,00"),
-      date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "Data inválida."),
+      debtId: idField,
+      amount: moneyField("Informe o valor pago. Exemplo: 1000,00"),
+      date: isoDate,
       accountId: z.coerce.number().int().positive("Escolha de qual conta saiu."),
       paidBy: z.coerce.number().int().positive("Escolha quem pagou."),
     })
@@ -34,12 +35,12 @@ export async function payDebt(_: FormState, formData: FormData): Promise<FormSta
   if (!p.success) return { error: p.error.issues[0].message };
   const v = p.data;
 
-  const debt = debtsWithRemaining().find((d) => d.id === v.debtId);
+  const debt = debtWithRemaining(v.debtId);
   if (!debt) return { error: "Dívida não encontrada." };
   const cents = parseBRL(v.amount)!;
   if (cents > debt.remainingCents) return { error: "O valor é maior que o saldo da dívida." };
-  if (!db.select().from(accounts).where(eq(accounts.id, v.accountId)).get()) return { error: "Conta não encontrada." };
-  if (!db.select().from(users).where(eq(users.id, v.paidBy)).get()) return { error: "Pessoa não encontrada." };
+  if (!accountById(v.accountId)) return { error: "Conta não encontrada." };
+  if (!userExists(v.paidBy)) return { error: "Pessoa não encontrada." };
 
   const cat = db.select().from(categories).where(eq(categories.name, "Dívidas")).get();
   db.transaction((tx) => {
@@ -72,7 +73,7 @@ export async function addDebt(_: FormState, formData: FormData): Promise<FormSta
   const p = z
     .object({
       creditor: z.string().trim().min(2, "Informe o credor.").max(100),
-      amount: z.string().refine((v) => parseBRL(v) !== null, "Valor inválido. Exemplo: 2500,00"),
+      amount: moneyField("Valor inválido. Exemplo: 2500,00"),
       owner: z.string().trim().min(2).max(40),
       notes: z.string().trim().max(300).optional(),
     })

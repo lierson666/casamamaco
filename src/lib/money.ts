@@ -24,10 +24,12 @@ export const centsToInput = (cents: number | null | undefined) =>
 // Como parseBRL, mas aceita zero e valor negativo (ex.: saldo inicial de uma conta).
 export function parseSignedBRL(input: string): number | null {
   const s = input.trim();
-  const negative = /^(R\$\s*)?-/.test(s) || s.startsWith("-");
-  const abs = s.replace(/-/g, "").trim();
+  const minus = (s.match(/-/g) ?? []).length;
+  if (minus > 1) return null;
+  const negative = minus === 1;
+  if (negative && !/^(R\$\s*)?-[^-]/.test(s)) return null; // o "-" precisa vir antes do número
+  const abs = s.replace("-", "").trim();
   if (/^(R\$)?\s*0([.,]0{1,2})?$/.test(abs)) return 0;
-  if ((s.match(/-/g) ?? []).length > 1) return null;
   const cents = parseBRL(abs);
   return cents === null ? null : negative ? -cents : cents;
 }

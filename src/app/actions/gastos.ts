@@ -5,16 +5,18 @@ import { revalidatePath } from "next/cache";
 import * as z from "zod";
 import { db, schema } from "@/db";
 import { requireUser } from "@/lib/auth";
+import { accountById, categoryById, userExists } from "@/lib/lookup";
 import { parseBRL } from "@/lib/money";
+import { idField, isoDate, moneyField } from "@/lib/validation";
 import type { FormState } from "./auth";
 
 const expense = z.object({
   description: z.string().trim().min(2, "Descreva o gasto.").max(120),
-  amount: z.string().refine((v) => parseBRL(v) !== null, "Valor inválido. Exemplo: 125,90"),
-  date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "Data inválida."),
-  categoryId: z.coerce.number().int().positive("Escolha a categoria."),
-  accountId: z.coerce.number().int().positive("Escolha de qual conta saiu."),
-  paidBy: z.coerce.number().int().positive("Escolha quem pagou."),
+  amount: moneyField(),
+  date: isoDate,
+  categoryId: idField,
+  accountId: idField,
+  paidBy: idField,
 });
 
 export async function addExpense(_: FormState, formData: FormData): Promise<FormState> {
@@ -23,11 +25,9 @@ export async function addExpense(_: FormState, formData: FormData): Promise<Form
   if (!parsed.success) return { error: parsed.error.issues[0].message };
   const v = parsed.data;
 
-  const okRefs =
-    db.select().from(schema.accounts).where(eq(schema.accounts.id, v.accountId)).get() &&
-    db.select().from(schema.categories).where(eq(schema.categories.id, v.categoryId)).get() &&
-    db.select().from(schema.users).where(eq(schema.users.id, v.paidBy)).get();
-  if (!okRefs) return { error: "Conta, categoria ou pessoa não encontrada." };
+  if (!accountById(v.accountId) || !categoryById(v.categoryId) || !userExists(v.paidBy)) {
+    return { error: "Conta, categoria ou pessoa não encontrada." };
+  }
 
   db.insert(schema.transactions)
     .values({

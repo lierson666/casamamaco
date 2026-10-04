@@ -7,7 +7,7 @@ import { requireUser } from "@/lib/auth";
 import { forecastBalance } from "@/lib/caixa";
 import { currentMonth, formatDay, isMonth, monthLabel, today } from "@/lib/dates";
 import { centsToInput, formatBRL } from "@/lib/money";
-import { accountBalances, monthRange, unpaidBills } from "@/lib/queries";
+import { accountBalances, monthRange, unpaidBillsUpTo } from "@/lib/queries";
 
 export const dynamic = "force-dynamic";
 
@@ -21,13 +21,13 @@ export default async function Caixa({ searchParams }: PageProps<"/caixa">) {
   const balances = accountBalances();
   const cash = balances.filter((a) => a.type !== "cartao");
   const total = cash.reduce((s, a) => s + a.balanceCents, 0);
-  const open = unpaidBills(currentMonth());
+  const open = unpaidBillsUpTo(currentMonth()); // inclui as atrasadas de meses anteriores
   const openSum = open.reduce((s, b) => s + (b.amountCents ?? 0), 0);
   const noValue = open.filter((b) => b.amountCents == null).length;
   const forecast = forecastBalance(total, openSum);
 
   const rows = db
-    .select({ id: t.id, date: t.date, type: t.type, cents: t.amountCents, description: t.description, account: accounts.name, category: categories.name, who: users.name })
+    .select({ id: t.id, date: t.date, type: t.type, accountType: accounts.type, cents: t.amountCents, description: t.description, account: accounts.name, category: categories.name, who: users.name })
     .from(t)
     .innerJoin(accounts, eq(accounts.id, t.accountId))
     .leftJoin(categories, eq(categories.id, t.categoryId))
@@ -35,6 +35,8 @@ export default async function Caixa({ searchParams }: PageProps<"/caixa">) {
     .where(and(gte(t.date, from), lt(t.date, to)))
     .orderBy(desc(t.date), desc(t.id))
     .all();
+  const cardMonth = new Map<string, number>();
+  for (const r of rows) if (r.type === "saida" && r.accountType === "cartao") cardMonth.set(r.account, (cardMonth.get(r.account) ?? 0) + r.cents);
   const entradas = rows.filter((r) => r.type === "entrada").reduce((s, r) => s + r.cents, 0);
   const saidas = rows.filter((r) => r.type === "saida").reduce((s, r) => s + r.cents, 0);
 
@@ -61,7 +63,7 @@ export default async function Caixa({ searchParams }: PageProps<"/caixa">) {
           <h2 className="text-sm font-medium text-muted">Saldo previsto</h2>
           <p className={`mt-1 font-display text-3xl tabular-nums ${forecast < 0 ? "text-neg" : "text-pos"}`}>{formatBRL(forecast)}</p>
           <p className="mt-1 text-xs text-muted">
-            Depois de {formatBRL(openSum)} em contas abertas{noValue > 0 && ` (+${noValue} sem valor)`}
+            Depois de {formatBRL(openSum)} em contas abertas e atrasadas{noValue > 0 && ` (+${noValue} sem valor definido)`}
           </p>
         </div>
         <div className="card p-5">
@@ -82,7 +84,7 @@ export default async function Caixa({ searchParams }: PageProps<"/caixa">) {
                   <span className="ml-2 text-xs font-normal text-muted">{a.type === "cartao" ? "cartão" : a.type === "banco" ? "banco" : "dinheiro"}</span>
                 </span>
                 {a.type === "cartao" ? (
-                  <span className="text-sm tabular-nums">{formatBRL(a.saidasCents)} gastos no total</span>
+                  <span className="text-sm tabular-nums">{formatBRL(cardMonth.get(a.name) ?? 0)} gastos em {monthLabel(month)}</span>
                 ) : (
                   <span className={`tabular-nums ${a.balanceCents < 0 ? "text-neg" : ""}`}>{formatBRL(a.balanceCents)}</span>
                 )}

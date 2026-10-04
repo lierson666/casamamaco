@@ -24,27 +24,34 @@ const ask = (q: string, hidden = false) =>
     });
   });
 
-const name = await ask("Nome: ");
-const email = (await ask("E-mail: ")).toLowerCase();
-const password = await ask("Senha (mín. 8 caracteres): ", true);
-const again = await ask("Repita a senha: ", true);
-rl.close();
+async function main() {
+  const name = await ask("Nome: ");
+  const email = (await ask("E-mail: ")).toLowerCase();
+  const password = await ask("Senha (mín. 8 caracteres): ", true);
+  const again = await ask("Repita a senha: ", true);
+  rl.close();
 
-if (!name || !/^\S+@\S+\.\S+$/.test(email)) {
-  console.error("Nome ou e-mail inválido.");
-  process.exit(1);
-}
-if (password.length < 8 || password !== again) {
-  console.error("Senha curta demais (mín. 8) ou as duas não conferem.");
-  process.exit(1);
+  if (!name || !/^\S+@\S+\.\S+$/.test(email)) {
+    console.error("Nome ou e-mail inválido.");
+    process.exit(1);
+  }
+  if (password.length < 8 || password !== again) {
+    console.error("Senha curta demais (mín. 8) ou as duas não conferem.");
+    process.exit(1);
+  }
+
+  const passwordHash = await bcrypt.hash(password, 12);
+  const existing = db.select().from(schema.users).where(eq(schema.users.email, email)).get();
+  if (existing) {
+    db.update(schema.users).set({ name, passwordHash }).where(eq(schema.users.id, existing.id)).run();
+    console.log(`Usuário ${email} atualizado.`);
+  } else {
+    db.insert(schema.users).values({ name, email, passwordHash }).run();
+    console.log(`Usuário ${email} criado.`);
+  }
 }
 
-const passwordHash = await bcrypt.hash(password, 12);
-const existing = db.select().from(schema.users).where(eq(schema.users.email, email)).get();
-if (existing) {
-  db.update(schema.users).set({ name, passwordHash }).where(eq(schema.users.id, existing.id)).run();
-  console.log(`Usuário ${email} atualizado.`);
-} else {
-  db.insert(schema.users).values({ name, email, passwordHash }).run();
-  console.log(`Usuário ${email} criado.`);
-}
+main().catch((e) => {
+  console.error(e);
+  process.exit(1);
+});

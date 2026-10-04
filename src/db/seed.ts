@@ -60,6 +60,13 @@ db.insert(billTemplates)
       notes:
         "Instalação 0046789448. Ainda não há conta cadastrada para a casa nova.",
     },
+    {
+      name: "Hospedagem Casa Mamaco (VPS Hostinger KVM 2)",
+      categoryId: catId("Outros"),
+      expectedAmountCents: 10_899,
+      notes:
+        "Servidor do sistema da casa. 1º mês R$ 70,99 (contratado em 04/10/2026); renova por R$ 108,99/mês. Planos de 12 e 24 meses saem mais baratos por mês.",
+    },
     { name: "Aluguel", categoryId: catId("Moradia") },
     {
       name: "Escola do Miguel",

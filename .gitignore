@@ -32,6 +32,10 @@ yarn-error.log*
 
 # env files (can opt-in for committing if needed)
 .env*
+!.env.example
+
+# banco de dados local e backups (dados financeiros: nunca no git)
+/data/
 
 # vercel
 .vercel

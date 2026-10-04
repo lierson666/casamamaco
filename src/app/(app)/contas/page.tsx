@@ -262,14 +262,19 @@ export default async function Contas({ searchParams }: PageProps<"/contas">) {
             <input name="name" required maxLength={100} placeholder="Ex.: IPVA, seguro do carro" className="field" />
           </label>
           <label className="flex flex-col gap-1.5 text-sm font-medium">
-            Valor (R$, se já souber)
+            Valor total (R$, se já souber)
             <input name="amount" inputMode="decimal" placeholder="0,00" className="field tabular-nums" />
           </label>
           <label className="flex flex-col gap-1.5 text-sm font-medium">
             Vencimento
             <input name="dueDate" type="date" required defaultValue={now} className="field" />
           </label>
-          <label className="flex flex-col gap-1.5 text-sm font-medium sm:col-span-2">
+          <label className="flex flex-col gap-1.5 text-sm font-medium">
+            Parcelas (vezes)
+            <input name="installments" type="number" min={1} max={60} defaultValue={1} inputMode="numeric" className="field tabular-nums" />
+            <span className="text-xs font-normal text-muted">O total é dividido e vira uma conta por mês, ex.: IPVA (1/3).</span>
+          </label>
+          <label className="flex flex-col gap-1.5 text-sm font-medium">
             Categoria
             <select name="categoryId" defaultValue="" className="field">
               <option value="">Sem categoria</option>

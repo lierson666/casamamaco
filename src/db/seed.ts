@@ -18,9 +18,13 @@ const despesas = [
   "Cartão de crédito",
   "Pensão",
   "Dívidas",
+  "Pets",
+  "Assinaturas e serviços digitais",
+  "Manutenção da casa",
+  "Presentes e festas",
   "Outros",
 ];
-const receitas = ["Salário", "Retirada XEPA", "Outras receitas"];
+const receitas = ["Salário", "Retirada da empresa", "Outras receitas"];
 
 db.insert(categories)
   .values([

@@ -10,6 +10,7 @@ export const navItems: NavItem[] = [
   { href: "/orcamento", label: "Orçamento", short: "Orçamento", icon: "orcamento" },
   { href: "/dividas", label: "Dívidas", short: "Dívidas", icon: "dividas" },
   { href: "/agenda", label: "Agenda", short: "Agenda", icon: "agenda" },
+  { href: "/integracoes", label: "Integrações", short: "Integrações", icon: "plug" },
   { href: "/usuarios", label: "Usuários", short: "Usuários", icon: "usuarios" },
 ];
 

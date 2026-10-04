@@ -5,6 +5,7 @@ import { revalidatePath } from "next/cache";
 import * as z from "zod";
 import { db, schema } from "@/db";
 import { requireUser } from "@/lib/auth";
+import { installmentDueDates, installmentName, MAX_INSTALLMENTS, splitInstallments } from "@/lib/installments";
 import { parseBRL } from "@/lib/money";
 import type { FormState } from "./auth";
 
@@ -114,23 +115,33 @@ export async function addBill(_: FormState, formData: FormData): Promise<FormSta
       amount: optionalMoney,
       dueDate: isoDate,
       categoryId: z.string().optional(),
+      installments: z.coerce.number().int().min(1, "Parcelas: de 1 a 60.").max(MAX_INSTALLMENTS, "Parcelas: de 1 a 60.").default(1),
     })
     .safeParse(Object.fromEntries(formData));
   if (!p.success) return { error: p.error.issues[0].message };
   const v = p.data;
   const categoryId = v.categoryId ? Number(v.categoryId) || null : null;
+  const total = v.amount === "" ? null : parseBRL(v.amount);
 
-  db.insert(bills)
-    .values({
-      name: v.name,
-      categoryId,
-      competence: v.dueDate.slice(0, 7),
-      dueDate: v.dueDate,
-      amountCents: v.amount === "" ? null : parseBRL(v.amount),
-    })
-    .run();
+  // Parcelado: o valor informado é o TOTAL, dividido sem perder centavo; um vencimento por mês.
+  const n = v.installments;
+  const amounts = total === null ? Array<number | null>(n).fill(null) : splitInstallments(total, n);
+  const dates = installmentDueDates(v.dueDate, n);
+  db.transaction((tx) => {
+    for (let i = 0; i < n; i++) {
+      tx.insert(bills)
+        .values({
+          name: installmentName(v.name, i + 1, n),
+          categoryId,
+          competence: dates[i].slice(0, 7),
+          dueDate: dates[i],
+          amountCents: amounts[i],
+        })
+        .run();
+    }
+  });
   refresh();
-  return { ok: "Conta adicionada." };
+  return { ok: n === 1 ? "Conta adicionada." : `${n} parcelas criadas, uma por mês.` };
 }
 
 export async function deleteBill(formData: FormData) {

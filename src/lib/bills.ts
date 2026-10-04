@@ -1,13 +1,6 @@
 import { eq } from "drizzle-orm";
 import { db, schema } from "@/db";
-
-// Vencimento do mês; dia 31 em mês de 30 dias vira o último dia.
-export function dueDateFor(month: string, day: number | null) {
-  if (!day) return null;
-  const [y, m] = month.split("-").map(Number);
-  const last = new Date(Date.UTC(y, m, 0)).getUTCDate();
-  return `${month}-${String(Math.min(day, last)).padStart(2, "0")}`;
-}
+import { dueDateFor } from "./dates";
 
 // Cria as contas do mês a partir dos modelos recorrentes (idempotente).
 export function ensureMonthBills(month: string) {

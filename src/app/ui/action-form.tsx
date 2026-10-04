@@ -12,7 +12,7 @@ export function ActionForm({
 }: {
   action: (state: FormState, formData: FormData) => Promise<FormState>;
   submit: string;
-  children: React.ReactNode;
+  children?: React.ReactNode;
   className?: string;
 }) {
   const [state, formAction, pending] = useActionState(action, undefined);

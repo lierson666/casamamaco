@@ -14,20 +14,20 @@ type Config = { clientId: string; clientSecret: string; conta?: string };
 
 export function readConfig(): Config | null {
   try {
-    return JSON.parse(fs.readFileSync(files.config, "utf8")) as Config;
+    return JSON.parse(fs.readFileSync(/*turbopackIgnore: true*/ files.config, "utf8")) as Config;
   } catch {
     return null;
   }
 }
 
 export const interConfigured = () =>
-  !!readConfig() && fs.existsSync(files.cert) && fs.existsSync(files.key);
+  !!readConfig() && fs.existsSync(/*turbopackIgnore: true*/ files.cert) && fs.existsSync(/*turbopackIgnore: true*/ files.key);
 
 export function saveInterSecrets(v: Config & { cert: string; key: string }) {
-  fs.mkdirSync(dir, { recursive: true, mode: 0o700 });
+  fs.mkdirSync(/*turbopackIgnore: true*/ dir, { recursive: true, mode: 0o700 });
   const write = (f: string, data: string) => {
-    fs.writeFileSync(f, data, { mode: 0o600 });
-    fs.chmodSync(f, 0o600);
+    fs.writeFileSync(/*turbopackIgnore: true*/ f, data, { mode: 0o600 });
+    fs.chmodSync(/*turbopackIgnore: true*/ f, 0o600);
   };
   write(files.config, JSON.stringify({ clientId: v.clientId, clientSecret: v.clientSecret, conta: v.conta || undefined }));
   write(files.cert, v.cert);
@@ -49,7 +49,7 @@ function call(method: "GET" | "POST", pathname: string, opts: { query?: Record<s
         method,
         headers: { ...(opts.body ? { "content-length": Buffer.byteLength(opts.body) } : {}), ...opts.headers },
         timeout: 20_000,
-        ...(secure ? { cert: fs.readFileSync(files.cert), key: fs.readFileSync(files.key) } : {}),
+        ...(secure ? { cert: fs.readFileSync(/*turbopackIgnore: true*/ files.cert), key: fs.readFileSync(/*turbopackIgnore: true*/ files.key) } : {}),
       },
       (res) => {
         let text = "";
@@ -103,7 +103,7 @@ async function get(pathname: string, query: Record<string, string> = {}) {
 }
 
 // "123.45", 123.45, "1.234,56" -> centavos (sinal preservado)
-function toCents(v: unknown): number | null {
+export function toCents(v: unknown): number | null {
   if (typeof v === "number") return Math.round(v * 100);
   if (typeof v !== "string") return null;
   let s = v.replace(/[R$\s]/g, "");
@@ -121,10 +121,10 @@ export async function interSaldo() {
 
 export type InterEntry = { extKey: string; date: string; type: "entrada" | "saida"; amountCents: number; description: string };
 
-// Extrato de um período (o Inter limita a ~90 dias por consulta).
-export async function interExtrato(inicio: string, fim: string): Promise<InterEntry[]> {
-  const j = await get("/banking/v2/extrato", { dataInicio: inicio, dataFim: fim });
-  const list = (Array.isArray(j) ? j : ((j as Record<string, unknown>).transacoes ?? (j as Record<string, unknown>).movimentacoes ?? [])) as Record<string, unknown>[];
+// Lê a resposta do extrato (aceita {transacoes|movimentacoes: [...]} ou uma lista direta) e normaliza.
+export function normalizeExtrato(json: unknown): InterEntry[] {
+  const root = json as Record<string, unknown> | unknown[] | null;
+  const list = (Array.isArray(root) ? root : ((root?.transacoes ?? root?.movimentacoes ?? []) as unknown[])) as Record<string, unknown>[];
   const seen = new Map<string, number>();
   const out: InterEntry[] = [];
   for (const t of list) {
@@ -140,4 +140,9 @@ export async function interExtrato(inicio: string, fim: string): Promise<InterEn
     out.push({ extKey: `${base}#${n}`, date, type, amountCents: Math.abs(cents), description });
   }
   return out;
+}
+
+// Extrato de um período (o Inter limita a ~90 dias por consulta).
+export async function interExtrato(inicio: string, fim: string): Promise<InterEntry[]> {
+  return normalizeExtrato(await get("/banking/v2/extrato", { dataInicio: inicio, dataFim: fim }));
 }

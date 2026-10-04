@@ -3,6 +3,9 @@
 // Interativo (a senha é digitada no terminal, sem eco):
 //   docker compose exec app npm run user:create
 //
+// Com senha vinda do stdin (não aparece em argumentos nem em log):
+//   printf '%s' "$SENHA" | docker compose exec -T app npm run user:create -- --nome X --email x@y.com --senha-stdin
+//
 // Automático, com senha provisória aleatória (não aparece no terminal: vai para
 // <pasta do banco>/credenciais-iniciais.txt, só legível pelo dono; apague depois de ler):
 //   docker compose exec -T app npm run user:create -- --nome Fulana --email fulana@x.com --aleatoria
@@ -46,7 +49,11 @@ async function main() {
   const email = (arg("--email") ?? (await ask("E-mail: "))).toLowerCase();
 
   let password: string;
-  if (random) {
+  if (process.argv.includes("--senha-stdin")) {
+    let data = "";
+    for await (const chunk of process.stdin) data += chunk;
+    password = data.replace(/\r?\n$/, "");
+  } else if (random) {
     password = randomBytes(12).toString("base64url"); // 16 caracteres
   } else {
     password = await ask("Senha (mín. 8 caracteres): ", true);

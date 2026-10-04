@@ -13,6 +13,9 @@ services:
     image: caddy:2
     restart: unless-stopped
     depends_on: [app]
+    environment:
+      GATE_USER: ${GATE_USER:?defina GATE_USER no .env}
+      GATE_HASH: ${GATE_HASH:?defina GATE_HASH no .env}
     ports:
       - "80:80"
       - "443:443"

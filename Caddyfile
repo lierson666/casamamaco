@@ -1,0 +1,8 @@
+casamamaco.com.br {
+	encode gzip
+	reverse_proxy app:3000
+}
+
+www.casamamaco.com.br {
+	redir https://casamamaco.com.br{uri} permanent
+}

@@ -68,7 +68,13 @@ db.insert(billTemplates)
       notes:
         "Servidor do sistema da casa. 1º mês R$ 70,99 (contratado em 04/10/2026); renova por R$ 108,99/mês. Planos de 12 e 24 meses saem mais baratos por mês.",
     },
-    { name: "Aluguel", categoryId: catId("Moradia") },
+    {
+      name: "Aluguel",
+      categoryId: catId("Moradia"),
+      expectedAmountCents: 504_096,
+      dueDay: 7,
+      notes: "QuintoAndar, contrato 1233139 (Rua Ametista, 57). Pagamento por boleto, código de barras ou cartão no QuintoAndar.",
+    },
     {
       name: "Escola do Miguel",
       categoryId: catId("Educação"),

@@ -14,3 +14,7 @@ export function parseBRL(input: string): number | null {
   const cents = Math.round(parseFloat(s) * 100);
   return cents > 0 && cents < 1_000_000_000 ? cents : null;
 }
+
+// Centavos -> texto para campo de formulário ("1234,56"), sem símbolo.
+export const centsToInput = (cents: number | null | undefined) =>
+  cents == null ? "" : (cents / 100).toFixed(2).replace(".", ",");

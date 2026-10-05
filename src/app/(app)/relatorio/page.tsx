@@ -2,7 +2,7 @@ import { BarsChart, DonutChart } from "@/app/ui/charts";
 import { MonthNav } from "@/app/ui/month-nav";
 import { requireUser } from "@/lib/auth";
 import { currentMonth, formatDay, isMonth, monthLabel, shiftMonth } from "@/lib/dates";
-import { formatBRL } from "@/lib/money";
+import { formatBRL, formatCompact } from "@/lib/money";
 import { delta, lastMonths, seriesByMonth, shares, topChanges } from "@/lib/report";
 import { monthlyTotals, spentByAccount, spentByCategoryName, spentByPerson, topExpenses } from "@/lib/queries";
 
@@ -15,7 +15,7 @@ function Kpi({ title, value, note, tone }: { title: string; value: string; note?
   return (
     <div className="card p-5">
       <h2 className="text-sm font-medium text-muted">{title}</h2>
-      <p className={`mt-1 font-display text-[clamp(1.7rem,6vw,2.3rem)] tabular-nums ${tone ?? ""}`}>{value}</p>
+      <p className={`mt-1 kpi ${tone ?? ""}`}>{value}</p>
       {note && <p className="mt-1 text-xs text-muted">{note}</p>}
     </div>
   );
@@ -37,7 +37,7 @@ function Breakdown({ title, rows }: { title: string; rows: { name: string; cents
                 <span className="font-medium">{r.name}</span>
                 <span className="tabular-nums">{formatBRL(r.cents)}</span>
               </div>
-              <div className="mt-1.5 h-1.5 overflow-hidden rounded-full bg-surface-2" aria-hidden>
+              <div className="mt-1.5 h-1.5 overflow-hidden border border-line bg-surface-2" aria-hidden>
                 <div className="h-full bg-accent" style={{ width: `${Math.round((r.cents / total) * 100)}%` }} />
               </div>
             </li>
@@ -72,8 +72,8 @@ export default async function Relatorio({ searchParams }: PageProps<"/relatorio"
     <div className="flex flex-col gap-6">
       <header className="flex flex-wrap items-end justify-between gap-4">
         <div>
-          <p className="eyebrow">Relatório</p>
-          <h1 className="mt-2 font-display text-[clamp(2rem,9vw,3rem)] uppercase leading-none">{monthLabel(month)}</h1>
+          <h1 className="h1">Relatório</h1>
+          <p className="mt-0.5 text-muted first-letter:uppercase">{monthLabel(month)}</p>
         </div>
         <MonthNav base="/relatorio" month={month} />
       </header>
@@ -97,7 +97,7 @@ export default async function Relatorio({ searchParams }: PageProps<"/relatorio"
           <div className="grid gap-6 lg:grid-cols-2">
             <section className="card p-5">
               <h2 className="mb-4 text-sm font-medium text-muted">Para onde foi o dinheiro</h2>
-              <DonutChart slices={slices} centerTop={formatBRL(cur.saidas)} centerBottom="gasto no mês" />
+              <DonutChart slices={slices} centerTop={formatCompact(cur.saidas)} centerBottom="gasto no mês" />
             </section>
             <section className="card p-5">
               <h2 className="mb-4 text-sm font-medium text-muted">Entradas e saídas, últimos 6 meses</h2>

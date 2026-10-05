@@ -12,13 +12,13 @@ export function DonutChart({ slices, centerTop, centerBottom }: { slices: Share[
   const summary = slices.map((s) => `${s.name} ${s.pct}%`).join(", ");
   return (
     <div className="flex flex-col items-center gap-5 sm:flex-row sm:items-center">
-      <svg viewBox="0 0 160 160" className="size-40 shrink-0" role="img" aria-label={`Gastos por categoria: ${summary}`}>
+      <svg viewBox="0 0 160 160" className="size-36 shrink-0" role="img" aria-label={`Gastos por categoria: ${summary}`}>
         {arcs.map((a, i) =>
           a.fraction > 0 ? (
             <path key={slices[i].name} d={arcPath(80, 80, 72, 46, a.start, a.end)} fill={swatch(i)} fillRule="evenodd" stroke="var(--surface)" strokeWidth={2} />
           ) : null,
         )}
-        <text x="80" y={centerBottom ? 78 : 86} textAnchor="middle" className="fill-current font-display" fontSize="17">
+        <text x="80" y={centerBottom ? 78 : 86} textAnchor="middle" className="fill-current font-display" fontSize="14">
           {centerTop}
         </text>
         {centerBottom && (
@@ -29,13 +29,13 @@ export function DonutChart({ slices, centerTop, centerBottom }: { slices: Share[
       </svg>
       <ul className="w-full min-w-0 flex-1 text-sm">
         {slices.map((s, i) => (
-          <li key={s.name} className="flex items-center justify-between gap-3 py-1">
-            <span className="flex min-w-0 items-center gap-2">
-              <span className="size-3 shrink-0 rounded-sm border border-line" style={{ background: swatch(i) }} aria-hidden />
-              <span className="truncate">{s.name}</span>
-            </span>
-            <span className="shrink-0 tabular-nums">
-              {formatBRL(s.cents)} <span className="text-muted">· {s.pct}%</span>
+          <li key={s.name} className="flex items-start gap-2 py-1">
+            <span className="mt-1.5 size-3 shrink-0 rounded-sm border border-line" style={{ background: swatch(i) }} aria-hidden />
+            <span className="min-w-0">
+              <span className="block font-medium leading-tight">{s.name}</span>
+              <span className="num text-muted">
+                {formatBRL(s.cents)} · {s.pct}%
+              </span>
             </span>
           </li>
         ))}
@@ -76,8 +76,8 @@ export function BarsChart({ data }: { data: MonthPoint[] }) {
           const cx = L + slot * i + slot / 2;
           return (
             <g key={d.month}>
-              <rect x={cx - bw - 1} y={y(d.entradas)} width={bw} height={Math.max(0, T + plotH - y(d.entradas))} fill="var(--pos)" rx={2} />
-              <rect x={cx + 1} y={y(d.saidas)} width={bw} height={Math.max(0, T + plotH - y(d.saidas))} fill="var(--accent)" rx={2} />
+              <rect x={cx - bw - 1} y={y(d.entradas)} width={bw} height={Math.max(0, T + plotH - y(d.entradas))} fill="var(--pos)" rx={0} />
+              <rect x={cx + 1} y={y(d.saidas)} width={bw} height={Math.max(0, T + plotH - y(d.saidas))} fill="var(--accent)" rx={0} />
               <text x={cx} y={H - 8} textAnchor="middle" fontSize="11" className="fill-current">
                 {monthShort(d.month)}
               </text>

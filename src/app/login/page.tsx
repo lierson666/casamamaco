@@ -17,9 +17,8 @@ export default async function LoginPage() {
       <div className="flex flex-col items-start gap-5">
         <Seal size={96} />
         <div>
-          <p className="eyebrow">Casa Mamaco</p>
-          <h1 className="mt-2 font-display text-5xl uppercase leading-none">Entrar</h1>
-          <p className="mt-1 font-serif text-xl italic text-accent">a casa te espera.</p>
+          <h1 className="h1">Entrar</h1>
+          <p className="mt-1 text-xl italic text-accent">a casa te espera.</p>
         </div>
       </div>
       {noUsers ? (

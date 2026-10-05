@@ -2,6 +2,7 @@ import { asc, eq } from "drizzle-orm";
 import Link from "next/link";
 import { addBill, deleteBill, payBill, unpayBill, updateBill } from "@/app/actions/contas";
 import { ActionForm } from "@/app/ui/action-form";
+import { Stamp } from "@/app/ui/stamp";
 import { db, schema } from "@/db";
 import { requireUser } from "@/lib/auth";
 import { ensureMonthBills } from "@/lib/bills";
@@ -35,21 +36,25 @@ function Bill({ b, accounts, users, me, now }: { b: BillRow; accounts: Option[];
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0">
           <p className="font-medium">{b.name}</p>
-          <p className="mt-0.5 text-xs text-muted">
+          <p className="mt-1 flex flex-wrap items-center gap-x-2 gap-y-1 text-sm text-muted">
             {b.paidAt ? (
               <>
-                Paga em {formatDay(b.paidAt)} · {b.account ?? "—"} · por <span className="text-ink">{b.payer ?? "—"}</span>
+                <Stamp tone="pago">pago</Stamp>
+                em {formatDay(b.paidAt)} · {b.account ?? "—"} · por <span className="text-ink">{b.payer ?? "—"}</span>
               </>
             ) : b.dueDate ? (
-              <span className={overdue ? "font-semibold text-neg" : undefined}>
-                {overdue
-                  ? `Venceu em ${formatDay(b.dueDate)} (${-left!} ${-left! === 1 ? "dia" : "dias"} de atraso)`
-                  : left === 0
-                    ? "Vence hoje"
-                    : `Vence em ${formatDay(b.dueDate)} (${left} ${left === 1 ? "dia" : "dias"})`}
-              </span>
+              overdue ? (
+                <>
+                  <Stamp tone="atraso">atrasada</Stamp>
+                  venceu em {formatDay(b.dueDate)} ({-left!} {-left! === 1 ? "dia" : "dias"})
+                </>
+              ) : left === 0 ? (
+                <Stamp tone="hoje">vence hoje</Stamp>
+              ) : (
+                `vence em ${formatDay(b.dueDate)} (${left} ${left === 1 ? "dia" : "dias"})`
+              )
             ) : (
-              "Sem data de vencimento"
+              "sem data de vencimento"
             )}
           </p>
           {b.notes && !b.paidAt && <p className="mt-1 text-xs text-muted">{b.notes}</p>}
@@ -58,7 +63,7 @@ function Bill({ b, accounts, users, me, now }: { b: BillRow; accounts: Option[];
           {b.amount != null ? (
             <span className="tabular-nums">{formatBRL(b.amount)}</span>
           ) : (
-            <span className="text-xs font-semibold text-accent">valor a definir</span>
+            <span className="text-sm text-accent">valor a definir</span>
           )}
         </div>
       </div>
@@ -209,8 +214,8 @@ export default async function Contas({ searchParams }: PageProps<"/contas">) {
     <div className="flex flex-col gap-6">
       <header className="flex flex-wrap items-end justify-between gap-4">
         <div>
-          <p className="eyebrow">Contas a pagar</p>
-          <h1 className="mt-2 font-display text-[clamp(2rem,9vw,3rem)] uppercase leading-none">{monthLabel(month)}</h1>
+          <h1 className="h1">Contas a pagar</h1>
+          <p className="mt-0.5 text-muted first-letter:uppercase">{monthLabel(month)}</p>
         </div>
         <nav aria-label="Mês" className="flex items-center gap-2 text-sm">
           <Link href={`/contas?mes=${shiftMonth(month, -1)}`} className="btn-ghost">
@@ -228,9 +233,9 @@ export default async function Contas({ searchParams }: PageProps<"/contas">) {
       </header>
 
       <section className="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4">
-        <div className="card col-span-2 p-5 sm:col-span-1">
+        <div className="card card-hero col-span-2 p-5 sm:col-span-1">
           <h2 className="text-sm font-medium text-muted">Falta pagar</h2>
-          <p className="mt-1 font-display text-4xl tabular-nums text-neg">{formatBRL(sum(unpaid))}</p>
+          <p className="mt-1 kpi text-neg">{formatBRL(sum(unpaid))}</p>
           <p className="mt-1 text-xs text-muted">
             {unpaid.length} {unpaid.length === 1 ? "conta" : "contas"}
             {noValue > 0 && ` · ${noValue} sem valor definido`}
@@ -238,12 +243,12 @@ export default async function Contas({ searchParams }: PageProps<"/contas">) {
         </div>
         <div className="card p-5">
           <h2 className="text-sm font-medium text-muted">Atrasadas</h2>
-          <p className={`mt-1 font-display text-4xl tabular-nums ${overdue.length ? "text-neg" : ""}`}>{overdue.length}</p>
+          <p className={`mt-1 kpi ${overdue.length ? "text-neg" : ""}`}>{overdue.length}</p>
           <p className="mt-1 text-xs text-muted">{overdue.length ? formatBRL(sum(overdue)) : "Nenhuma atrasada"}</p>
         </div>
         <div className="card p-5">
           <h2 className="text-sm font-medium text-muted">Já pago no mês</h2>
-          <p className="mt-1 font-display text-4xl tabular-nums text-pos">{formatBRL(sum(paid))}</p>
+          <p className="mt-1 kpi text-pos">{formatBRL(sum(paid))}</p>
           <p className="mt-1 text-xs text-muted">{paid.length} {paid.length === 1 ? "conta" : "contas"}</p>
         </div>
       </section>
@@ -255,7 +260,7 @@ export default async function Contas({ searchParams }: PageProps<"/contas">) {
       <Section title="Pagas" bills={paid} {...shared} />
 
       <section className="card p-5">
-        <h2 className="mb-4 font-display text-2xl uppercase">Nova conta avulsa</h2>
+        <h2 className="h2 mb-4">Nova conta avulsa</h2>
         <ActionForm action={addBill} submit="Adicionar conta">
           <label className="flex flex-col gap-1.5 text-sm font-medium sm:col-span-2">
             Nome

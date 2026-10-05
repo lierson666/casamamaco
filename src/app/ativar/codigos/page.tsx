@@ -16,8 +16,7 @@ export default async function Codigos() {
       <div className="flex flex-col items-start gap-5">
         <Seal size={80} />
         <div>
-          <p className="eyebrow">Conta ativada</p>
-          <h1 className="mt-2 font-display text-4xl uppercase leading-none">Seus códigos</h1>
+          <h1 className="h1">Seus códigos</h1>
         </div>
       </div>
       <RecoveryCodes codes={raw.split(",")} />

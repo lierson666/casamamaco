@@ -13,8 +13,7 @@ export default async function Mfa() {
       <div className="flex flex-col items-start gap-5">
         <Seal size={80} />
         <div>
-          <p className="eyebrow">Segundo passo</p>
-          <h1 className="mt-2 font-display text-4xl uppercase leading-none">Código</h1>
+          <h1 className="h1">Código</h1>
           <p className="mt-2 text-sm text-muted">Digite o código de 6 dígitos do app autenticador. Sem o celular, use um código de recuperação.</p>
         </div>
       </div>

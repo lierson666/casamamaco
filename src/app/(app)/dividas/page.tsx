@@ -1,6 +1,7 @@
 import { desc, eq } from "drizzle-orm";
 import { addDebt, deleteDebt, payDebt, setDebtPlan, undoDebtPayment, updateDebt } from "@/app/actions/dividas";
 import { ActionForm } from "@/app/ui/action-form";
+import { Stamp } from "@/app/ui/stamp";
 import { db, schema } from "@/db";
 import { requireUser } from "@/lib/auth";
 import { currentMonth, formatDay, monthLabel, today } from "@/lib/dates";
@@ -43,29 +44,29 @@ export default async function Dividas() {
         ))}
       </datalist>
       <header>
-        <p className="eyebrow">Dívidas</p>
-        <h1 className="mt-2 font-display text-[clamp(2rem,9vw,3rem)] uppercase leading-none">Quanto falta</h1>
+        <h1 className="h1">Dívidas</h1>
+        <p className="mt-0.5 text-muted">Quanto falta pagar e quando cada uma acaba</p>
       </header>
 
       <section className="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4">
-        <div className="card col-span-2 p-5 sm:col-span-1">
+        <div className="card card-hero col-span-2 p-5 sm:col-span-1">
           <h2 className="text-sm font-medium text-muted">Total em aberto</h2>
-          <p className="mt-1 font-display text-[clamp(2.2rem,10vw,3rem)] tabular-nums text-neg">{formatBRL(totalRemaining)}</p>
+          <p className="mt-1 kpi text-neg">{formatBRL(totalRemaining)}</p>
           <p className="mt-1 text-xs text-muted">{open.length} {open.length === 1 ? "dívida" : "dívidas"} abertas</p>
         </div>
         <div className="card p-5">
           <h2 className="text-sm font-medium text-muted">Plano por mês</h2>
-          <p className="mt-1 font-display text-3xl tabular-nums">{formatBRL(monthly)}</p>
+          <p className="mt-1 kpi">{formatBRL(monthly)}</p>
         </div>
         <div className="card p-5">
           <h2 className="text-sm font-medium text-muted">Tudo quitado em</h2>
-          <p className="mt-1 font-display text-2xl uppercase leading-tight">{plan.endMonth ? monthLabel(plan.endMonth) : "—"}</p>
+          <p className="mt-1 h2">{plan.endMonth ? monthLabel(plan.endMonth) : "—"}</p>
           <p className="mt-1 text-xs text-muted">{monthly > 0 ? (plan.endMonth ? "se mantiver o valor do plano" : "valor baixo demais para quitar") : "defina o valor do plano"}</p>
         </div>
       </section>
 
       <section className="card p-5">
-        <h2 className="mb-1 font-display text-2xl uppercase">Plano de quitação</h2>
+        <h2 className="h2 mb-1">Plano de quitação</h2>
         <p className="mb-4 text-sm text-muted">Todo mês o valor fixo vai para a dívida de menor saldo. Quando ela acaba, a sobra e o valor inteiro passam para a próxima (bola de neve).</p>
         <ActionForm action={setDebtPlan} submit="Salvar plano" className="flex flex-col gap-3">
           <label className="flex flex-col gap-1.5 text-sm font-medium">
@@ -106,12 +107,12 @@ export default async function Dividas() {
                     {d.creditor}
                     <span className="ml-2 text-xs font-normal text-muted">{d.owner}</span>
                   </span>
-                  <span className="tabular-nums">{d.remainingCents > 0 ? formatBRL(d.remainingCents) : <span className="text-pos">quitada</span>}</span>
+                  <span className="tabular-nums">{d.remainingCents > 0 ? formatBRL(d.remainingCents) : <Stamp tone="quitada">quitada</Stamp>}</span>
                 </div>
                 <p className="mt-0.5 text-xs text-muted">
                   Total {formatBRL(d.originalCents)} · pago {formatBRL(d.paidCents)} ({pct}%)
                 </p>
-                <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-surface-2" role="progressbar" aria-valuenow={pct} aria-valuemin={0} aria-valuemax={100} aria-label={`${d.creditor}: ${pct}% pago`}>
+                <div className="mt-2 h-1.5 overflow-hidden border border-line bg-surface-2" role="progressbar" aria-valuenow={pct} aria-valuemin={0} aria-valuemax={100} aria-label={`${d.creditor}: ${pct}% pago`}>
                   <div className="h-full bg-pos" style={{ width: `${pct}%` }} />
                 </div>
                 {d.notes && <p className="mt-1 text-xs text-muted">{d.notes}</p>}
@@ -220,7 +221,7 @@ export default async function Dividas() {
       </section>
 
       <section className="card p-5">
-        <h2 className="mb-4 font-display text-2xl uppercase">Nova dívida</h2>
+        <h2 className="h2 mb-4">Nova dívida</h2>
         <ActionForm action={addDebt} submit="Cadastrar dívida">
           <label className="flex flex-col gap-1.5 text-sm font-medium sm:col-span-2">
             Credor

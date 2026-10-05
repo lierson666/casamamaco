@@ -47,21 +47,21 @@ export default async function Caixa({ searchParams }: PageProps<"/caixa">) {
     <div className="flex flex-col gap-6">
       <header className="flex flex-wrap items-end justify-between gap-4">
         <div>
-          <p className="eyebrow">Caixa da casa</p>
-          <h1 className="mt-2 font-display text-[clamp(2rem,9vw,3rem)] uppercase leading-none">{monthLabel(month)}</h1>
+          <h1 className="h1">Caixa</h1>
+          <p className="mt-0.5 text-muted first-letter:uppercase">{monthLabel(month)}</p>
         </div>
         <MonthNav base="/caixa" month={month} />
       </header>
 
       <section className="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4">
-        <div className="card col-span-2 p-5 sm:col-span-1">
+        <div className="card card-hero col-span-2 p-5 sm:col-span-1">
           <h2 className="text-sm font-medium text-muted">Saldo atual</h2>
-          <p className={`mt-1 font-display text-[clamp(2.2rem,10vw,3rem)] tabular-nums ${total < 0 ? "text-neg" : ""}`}>{formatBRL(total)}</p>
+          <p className={`mt-1 kpi ${total < 0 ? "text-neg" : ""}`}>{formatBRL(total)}</p>
           <p className="mt-1 text-xs text-muted">Carteira e contas do banco</p>
         </div>
         <div className="card p-5">
           <h2 className="text-sm font-medium text-muted">Saldo previsto</h2>
-          <p className={`mt-1 font-display text-3xl tabular-nums ${forecast < 0 ? "text-neg" : "text-pos"}`}>{formatBRL(forecast)}</p>
+          <p className={`mt-1 kpi ${forecast < 0 ? "text-neg" : "text-pos"}`}>{formatBRL(forecast)}</p>
           <p className="mt-1 text-xs text-muted">
             Depois de {formatBRL(openSum)} em contas abertas e atrasadas{noValue > 0 && ` (+${noValue} sem valor definido)`}
           </p>
@@ -107,7 +107,7 @@ export default async function Caixa({ searchParams }: PageProps<"/caixa">) {
       </section>
 
       <section className="card p-5">
-        <h2 className="mb-4 font-display text-2xl uppercase">Registrar entrada</h2>
+        <h2 className="h2 mb-4">Registrar entrada</h2>
         <ActionForm action={addIncome} submit="Registrar entrada">
           <label className="flex flex-col gap-1.5 text-sm font-medium sm:col-span-2">
             O que entrou?

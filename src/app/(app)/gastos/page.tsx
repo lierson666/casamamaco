@@ -31,7 +31,7 @@ function Breakdown({ title, rows, total }: { title: string; rows: Row[]; total: 
                 <span className="font-medium">{r.name}</span>
                 <span className="tabular-nums">{formatBRL(r.cents)}</span>
               </div>
-              <div className="mt-1.5 h-1.5 overflow-hidden rounded-full bg-surface-2" aria-hidden>
+              <div className="mt-1.5 h-1.5 overflow-hidden border border-line bg-surface-2" aria-hidden>
                 <div className="h-full bg-accent" style={{ width: `${total ? Math.round((r.cents / total) * 100) : 0}%` }} />
               </div>
             </li>
@@ -80,8 +80,8 @@ export default async function Gastos({ searchParams }: PageProps<"/gastos">) {
     <div className="flex flex-col gap-6">
       <header className="flex flex-wrap items-end justify-between gap-4">
         <div>
-          <p className="eyebrow">Gastos do mês</p>
-          <h1 className="mt-2 font-display text-[clamp(2rem,9vw,3rem)] uppercase leading-none">{monthLabel(month)}</h1>
+          <h1 className="h1">Gastos</h1>
+          <p className="mt-0.5 text-muted first-letter:uppercase">{monthLabel(month)}</p>
         </div>
         <nav aria-label="Mês" className="flex items-center gap-2 text-sm">
           <Link href={`/gastos?mes=${shiftMonth(month, -1)}`} className="btn-ghost">
@@ -98,9 +98,9 @@ export default async function Gastos({ searchParams }: PageProps<"/gastos">) {
         </nav>
       </header>
 
-      <section className="card p-5">
+      <section className="card card-hero p-5">
         <h2 className="text-sm font-medium text-muted">Total gasto no mês</h2>
-        <p className="mt-1 font-display text-[clamp(2.2rem,10vw,3rem)] tabular-nums text-neg">{formatBRL(total)}</p>
+        <p className="mt-1 kpi text-neg">{formatBRL(total)}</p>
         <p className="mt-1 text-sm text-muted">
           {rows.length} {rows.length === 1 ? "lançamento" : "lançamentos"}
         </p>
@@ -113,7 +113,7 @@ export default async function Gastos({ searchParams }: PageProps<"/gastos">) {
       </div>
 
       <section className="card p-5">
-        <h2 className="mb-4 font-display text-2xl uppercase">Novo gasto</h2>
+        <h2 className="h2 mb-4">Novo gasto</h2>
         <ExpenseForm categories={catOptions} accounts={accOptions} users={userOptions} me={me.id} today={today()} />
       </section>
 

@@ -1,10 +1,14 @@
 @import "tailwindcss";
 
 /*
- * TEMAS. O app inteiro usa só estas variáveis, então trocar o KV = trocar
- * NEXT_PUBLIC_THEME (ou editar os valores abaixo).
- *   xepa   → KV do site do Grupo XEPA (padrão, provisório)
- *   cordel → KV da Casa Mamaco, baseado na xilogravura do Xepinha e do Oli
+ * SISTEMA VISUAL — "caderno de contas" em xilogravura de cordel.
+ * Papel, tinta preta, laranja do Oli. O app inteiro usa só estas variáveis:
+ * trocar o tema = trocar NEXT_PUBLIC_THEME (ou editar os valores abaixo).
+ *   cordel → padrão (a arte do Xepinha e do Oli)
+ *   xepa   → alternativa verde-floresta do site do Grupo XEPA
+ *
+ * Profundidade: bordas + uma sombra dura (como falha de impressão) só nos destaques.
+ * Espaçamento: base de 4px. Tipografia: escala ~1,25 (12 · 15 · 19 · 24 · 30 · 44).
  */
 :root,
 [data-theme="xepa"] {
@@ -12,41 +16,47 @@
   --bg-glow: radial-gradient(1200px 600px at 70% -10%, #2b6a4a55, transparent 60%);
   --surface: #1a3a28;
   --surface-2: #23503a;
+  --field: #14301f;
   --ink: #f1e8d2;
   --muted: #a8b8ab;
-  --line: #f1e8d224;
+  --line: #f1e8d224; /* divisórias discretas */
+  --edge: #f1e8d233; /* contorno dos cartões */
   --accent: #f4c430;
+  --accent-ink: #12291c;
   --primary: #f1e8d2;
   --on-primary: #12291c;
   --pos: #7fd6a3;
   --neg: #ff8a73;
-  --radius: 22px;
+  --radius: 14px;
   --border-w: 1px;
+  --hero-shadow: none;
   --bar-bg: rgba(8, 24, 16, 0.92);
   --bar-ink: #f1e8d2;
   --bar-muted: rgba(241, 232, 210, 0.66);
-  --accent-ink: #12291c;
 }
 
 [data-theme="cordel"] {
-  --bg: #fae9cf;
+  --bg: #f6e7cb; /* papel */
   --bg-glow: none;
-  --surface: #fff5e3;
-  --surface-2: #f1dcb8;
-  --ink: #14110f;
-  --muted: #6b5d4d;
-  --line: #14110f;
-  --accent: #c8601f;
-  --primary: #14110f;
-  --on-primary: #fae9cf;
-  --pos: #2f6b3a;
-  --neg: #b3361c;
-  --radius: 6px;
-  --border-w: 2px;
-  --bar-bg: rgba(20, 17, 15, 0.94);
+  --surface: #fff6e4; /* folha */
+  --surface-2: #f0dcb6;
+  --field: #fbecd0; /* campos ficam um tom abaixo da folha (recebem texto) */
+  --ink: #17120e; /* tinta */
+  --muted: #6c5e4a;
+  --line: rgba(23, 18, 14, 0.2);
+  --edge: #17120e;
+  --accent: #c8601f; /* laranja do Oli */
+  --accent-ink: #ffffff;
+  --primary: #17120e;
+  --on-primary: #f6e7cb;
+  --pos: #3d6a2a; /* verde do sertão */
+  --neg: #a8321b; /* tinta vermelha de contador */
+  --radius: 4px;
+  --border-w: 1.5px;
+  --hero-shadow: 4px 4px 0 var(--ink);
+  --bar-bg: rgba(23, 18, 14, 0.95);
   --bar-ink: #f2dcae;
   --bar-muted: rgba(242, 220, 174, 0.66);
-  --accent-ink: #ffffff;
 }
 
 @theme inline {
@@ -56,14 +66,19 @@
   --color-ink: var(--ink);
   --color-muted: var(--muted);
   --color-line: var(--line);
+  --color-edge: var(--edge);
   --color-accent: var(--accent);
   --color-primary: var(--primary);
   --color-on-primary: var(--on-primary);
   --color-pos: var(--pos);
   --color-neg: var(--neg);
-  --font-sans: var(--font-dm-sans);
-  --font-display: var(--font-anton);
-  --font-serif: var(--font-fraunces);
+  --font-sans: var(--font-figtree);
+  --font-display: var(--font-alfa);
+}
+
+html {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 [data-theme="cordel"] body {
@@ -75,66 +90,166 @@ body {
   background: var(--bg-glow), var(--bg);
   background-attachment: fixed;
   color: var(--ink);
-  font-family: var(--font-dm-sans), system-ui, sans-serif;
+  font-family: var(--font-figtree), system-ui, sans-serif;
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+:focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: 2px;
 }
 
 @layer components {
+  /* ----- Tipografia: peso e cor fazem a hierarquia, o tamanho só confirma ----- */
+  .h1 {
+    font-family: var(--font-alfa), Georgia, serif;
+    font-size: clamp(1.9rem, 6vw, 2.5rem);
+    line-height: 1.05;
+    letter-spacing: -0.01em;
+    text-wrap: balance;
+  }
+  .h2 {
+    font-family: var(--font-alfa), Georgia, serif;
+    font-size: 1.5rem;
+    line-height: 1.15;
+    letter-spacing: -0.005em;
+  }
+  .h3 {
+    font-weight: 600;
+    font-size: 1.0625rem;
+    line-height: 1.3;
+  }
+  .label {
+    font-size: 0.8125rem;
+    font-weight: 500;
+    color: var(--muted);
+  }
+  /* Número que lidera a tela: slab grande, algarismos tabulares, traço duplo de total. */
+  .hero {
+    font-family: var(--font-alfa), Georgia, serif;
+    font-size: clamp(2.2rem, 8vw, 3.1rem);
+    line-height: 1.05;
+    letter-spacing: -0.01em;
+    font-variant-numeric: tabular-nums;
+  }
+  /* Número de cartão em linha (vários lado a lado): menor que o .hero, que é só para o foco único da tela. */
+  .kpi {
+    font-family: var(--font-alfa), Georgia, serif;
+    font-size: clamp(1.35rem, 4.2vw, 1.85rem);
+    line-height: 1.1;
+    letter-spacing: -0.01em;
+    font-variant-numeric: tabular-nums;
+  }
+  .h1::first-letter { text-transform: uppercase; }
+  .num {
+    font-variant-numeric: tabular-nums;
+  }
+  .total-rule {
+    display: inline-block;
+    padding-bottom: 0.1em;
+    border-bottom: 4px double var(--edge);
+  }
+
+  /* ----- Superfícies ----- */
   .card {
     background: var(--surface);
-    border: var(--border-w) solid var(--line);
+    border: var(--border-w) solid var(--edge);
     border-radius: var(--radius);
   }
+  .card-hero {
+    box-shadow: var(--hero-shadow);
+  }
+
+  /* Seção sem caixa: título com régua, como página de caderno. */
+  .rule-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0.75rem;
+    padding-bottom: 0.4rem;
+    border-bottom: var(--border-w) solid var(--edge);
+  }
+
+  /* ----- Linha de caderno: nome ........ valor ----- */
+  .leader {
+    display: flex;
+    align-items: baseline;
+    gap: 0.5rem;
+  }
+  .leader-dots {
+    flex: 1 1 1rem;
+    min-width: 1rem;
+    border-bottom: 1.5px dotted color-mix(in srgb, var(--ink) 45%, transparent);
+    transform: translateY(-0.28em);
+  }
+
+  /* ----- Carimbo de status (o item de assinatura do app) ----- */
+  .stamp {
+    display: inline-block;
+    padding: 0.05rem 0.45rem 0.1rem;
+    border: 2px solid currentColor;
+    border-radius: 3px;
+    font-family: var(--font-alfa), Georgia, serif;
+    font-size: 0.6875rem;
+    line-height: 1.3;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    transform: rotate(-4deg);
+    mix-blend-mode: multiply;
+    opacity: 0.92;
+    white-space: nowrap;
+  }
+  .stamp-pago { color: var(--pos); }
+  .stamp-atraso { color: var(--neg); }
+  .stamp-hoje { color: var(--accent); }
+  .stamp-quitada { color: var(--pos); }
+
+  /* ----- Controles ----- */
   .field {
     width: 100%;
-    background: var(--surface);
+    background: var(--field);
     color: var(--ink);
-    border: var(--border-w) solid var(--line);
-    border-radius: calc(var(--radius) / 2);
-    padding: 0.7rem 0.85rem;
+    border: var(--border-w) solid color-mix(in srgb, var(--edge) 70%, transparent);
+    border-radius: var(--radius);
+    padding: 0.6rem 0.8rem;
     font-size: 1rem;
-    outline: none;
   }
+  .field::placeholder { color: color-mix(in srgb, var(--muted) 80%, transparent); }
   .field:focus {
-    border-color: var(--accent);
-    box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 30%, transparent);
+    outline: none;
+    border-color: var(--edge);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 40%, transparent);
   }
+
+  /* Botão de carimbo: afunda ao clicar. */
   .btn {
     background: var(--primary);
     color: var(--on-primary);
-    border-radius: 999px;
-    padding: 0.7rem 1.25rem;
+    border-radius: var(--radius);
+    padding: 0.6rem 1.15rem;
     font-weight: 600;
-    letter-spacing: 0.02em;
-    transition: transform 0.12s ease, opacity 0.12s ease;
+    box-shadow: 2px 2px 0 var(--accent);
+    transition: transform 140ms cubic-bezier(0.23, 1, 0.32, 1), box-shadow 140ms cubic-bezier(0.23, 1, 0.32, 1), opacity 140ms;
   }
-  .btn:hover { transform: translateY(-1px); }
-  .btn:disabled { opacity: 0.6; transform: none; }
+  .btn:hover { transform: translate(-1px, -1px); box-shadow: 3px 3px 0 var(--accent); }
+  .btn:active { transform: translate(2px, 2px); box-shadow: 0 0 0 var(--accent); }
+  .btn:disabled { opacity: 0.55; transform: none; box-shadow: none; }
   .btn-ghost {
-    border: var(--border-w) solid var(--line);
-    border-radius: 999px;
-    padding: 0.35rem 0.85rem;
+    border: var(--border-w) solid var(--edge);
+    border-radius: var(--radius);
+    padding: 0.35rem 0.8rem;
     font-size: 0.875rem;
+    font-weight: 500;
+    transition: background-color 140ms;
   }
-  .eyebrow {
-    display: flex;
-    align-items: center;
-    gap: 0.6rem;
-    font-size: 0.7rem;
-    font-weight: 600;
-    letter-spacing: 0.18em;
-    text-transform: uppercase;
-    color: var(--accent);
-  }
-  .eyebrow::before {
-    content: "";
-    width: 2rem;
-    height: 2px;
-    background: var(--accent);
-  }
+  .btn-ghost:hover { background: color-mix(in srgb, var(--ink) 7%, transparent); }
+  .btn-ghost:active { transform: translateY(1px); }
+
+  /* ----- Banner e moldura da xilogravura (só no tema cordel) ----- */
   .kv-art, .kv-frame { display: none; }
   [data-theme="cordel"] .kv-art { display: block; }
   [data-theme="cordel"] .kv-seal { display: none; }
-  /* Moldura da xilogravura em volta de toda a página (só no tema cordel). */
   [data-theme="cordel"] .kv-frame {
     display: block;
     position: fixed;
@@ -149,7 +264,7 @@ body {
   [data-theme="cordel"] .bottom-nav {
     padding-bottom: calc(env(safe-area-inset-bottom) + 16px);
   }
-  /* Faixa de triângulos da borda da xilogravura (só no tema cordel). */
+  /* Faixa de triângulos da borda da xilogravura: só embaixo do banner. */
   .zigzag { display: none; }
   [data-theme="cordel"] .zigzag {
     display: block;
@@ -158,10 +273,9 @@ body {
       linear-gradient(135deg, var(--ink) 25%, transparent 25%) -7px 0,
       linear-gradient(225deg, var(--ink) 25%, transparent 25%) -7px 0;
     background-size: 14px 14px;
-    border-top: 2px solid var(--ink);
+    border-top: var(--border-w) solid var(--ink);
   }
 }
-
 
 /* ===== Menu mobile (estilo CTD): barra flutuante + folhas ===== */
 .tabbar { display: none; }
@@ -197,9 +311,7 @@ body {
     background: none;
     padding: 0;
     color: var(--bar-muted);
-    font: 700 11px/1.1 var(--font-dm-sans), system-ui, sans-serif;
-    letter-spacing: 0.05em;
-    text-transform: uppercase;
+    font: 600 11px/1.1 var(--font-figtree), system-ui, sans-serif;
     -webkit-tap-highlight-color: transparent;
     white-space: nowrap;
   }
@@ -239,7 +351,7 @@ body {
   display: flex;
   align-items: flex-end;
   justify-content: center;
-  background: rgba(10, 7, 6, 0.5);
+  background: rgba(23, 18, 14, 0.5);
   padding: 12px 12px calc(104px + env(safe-area-inset-bottom, 0px));
   animation: sheet-in 0.18s ease;
 }
@@ -251,10 +363,10 @@ body {
   flex-direction: column;
   background: var(--surface);
   color: var(--ink);
-  border: var(--border-w) solid var(--line);
-  border-radius: min(var(--radius), 24px);
-  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
-  animation: sheet-up 0.22s cubic-bezier(0.2, 0.8, 0.2, 1);
+  border: var(--border-w) solid var(--edge);
+  border-radius: min(var(--radius), 18px);
+  box-shadow: var(--hero-shadow);
+  animation: sheet-up 0.22s cubic-bezier(0.23, 1, 0.32, 1);
   overflow: hidden;
 }
 .sheet-head {
@@ -264,10 +376,9 @@ body {
   padding: 16px 16px 8px;
 }
 .sheet-head h2 {
-  font-family: var(--font-anton), Impact, sans-serif;
-  font-size: 1.6rem;
-  text-transform: uppercase;
-  letter-spacing: 0.02em;
+  font-family: var(--font-alfa), Georgia, serif;
+  font-size: 1.5rem;
+  line-height: 1.15;
 }
 .sheet-close {
   width: 36px;
@@ -289,6 +400,7 @@ body {
 @keyframes sheet-up { from { transform: translateY(24px); opacity: 0; } }
 @media (prefers-reduced-motion: reduce) {
   .sheet, .sheet-panel { animation: none; }
+  .btn, .btn-ghost { transition: none; }
 }
 
 /* ===== Visual de app no celular ===== */
@@ -297,7 +409,7 @@ body {
   background: color-mix(in srgb, var(--bg) 92%, transparent);
   -webkit-backdrop-filter: blur(14px);
   backdrop-filter: blur(14px);
-  border-bottom: var(--border-w) solid var(--line);
+  border-bottom: var(--border-w) solid var(--edge);
 }
 @media (max-width: 899px) {
   body { background-attachment: scroll; -webkit-text-size-adjust: 100%; }
@@ -313,7 +425,6 @@ body {
   .btn-ghost { min-height: 40px; display: inline-flex; align-items: center; }
   .field { min-height: 48px; }
   select.field { padding-right: 2rem; }
-  .card { border-radius: min(var(--radius), 18px); }
 }
 
 /* ===== Paleta dos gráficos (por tema) ===== */
@@ -323,6 +434,6 @@ body {
   --c5: #c9b88a; --c6: #7d5ba6; --c7: #9bc4a5; --c8: #8b9a90;
 }
 [data-theme="cordel"] {
-  --c1: #c8601f; --c2: #14110f; --c3: #d9a441; --c4: #5b7a3a;
+  --c1: #c8601f; --c2: #17120e; --c3: #d9a441; --c4: #5b7a3a;
   --c5: #9c3b22; --c6: #3f6f73; --c7: #7a6a55; --c8: #b5a48a;
 }

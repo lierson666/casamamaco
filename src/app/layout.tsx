@@ -1,15 +1,11 @@
 import type { Metadata, Viewport } from "next";
-import { Anton, DM_Sans, Fraunces } from "next/font/google";
+import { Alfa_Slab_One, Figtree } from "next/font/google";
 import { Frame } from "./ui/kv";
 import "./globals.css";
 
-const dmSans = DM_Sans({ variable: "--font-dm-sans", subsets: ["latin"] });
-const anton = Anton({ variable: "--font-anton", subsets: ["latin"], weight: "400" });
-const fraunces = Fraunces({
-  variable: "--font-fraunces",
-  subsets: ["latin"],
-  style: ["normal", "italic"],
-});
+const figtree = Figtree({ variable: "--font-figtree", subsets: ["latin"] });
+// Slab de xilogravura: só para títulos e para os números que lideram a tela.
+const alfa = Alfa_Slab_One({ variable: "--font-alfa", subsets: ["latin"], weight: "400" });
 
 export const metadata: Metadata = {
   title: "Casa Mamaco",
@@ -30,7 +26,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
     <html
       lang="pt-BR"
       data-theme={theme}
-      className={`${dmSans.variable} ${anton.variable} ${fraunces.variable} h-full antialiased`}
+      className={`${figtree.variable} ${alfa.variable} h-full antialiased`}
     >
       <body className="flex min-h-full flex-col">
         <Frame />

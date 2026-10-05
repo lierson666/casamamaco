@@ -30,7 +30,7 @@ export function SidebarNav() {
           key={item.href}
           href={item.href}
           aria-current={isActive(path, item.href) ? "page" : undefined}
-          className="flex items-center gap-3 rounded-full px-4 py-2.5 text-[0.95rem] font-medium text-muted transition hover:text-ink aria-[current=page]:bg-surface-2 aria-[current=page]:text-ink"
+          className="flex items-center gap-3 rounded-[var(--radius)] px-3 py-2.5 font-medium text-bg/70 transition-colors hover:bg-bg/10 hover:text-bg aria-[current=page]:bg-accent aria-[current=page]:text-white"
         >
           <Icon name={item.icon} />
           {item.label}

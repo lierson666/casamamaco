@@ -19,6 +19,15 @@ def piece(box, k=1.0, close=7, erase=()):
     lum = c.convert("L")
     a = lum.point(lambda v: max(0, min(255, int((228 - v) * 255 / 50))))
     a = a.filter(ImageFilter.GaussianBlur(0.8))
+    # suaviza as bordas do recorte: onde a arte foi cortada, a tinta some em degradê em vez de terminar numa linha reta
+    w, h = a.size
+    ramp = 14
+    def edge(x, y):
+        d = min(x, w - 1 - x, y, h - 1 - y)
+        return 255 if d >= ramp else int(255 * d / ramp)
+    mask = Image.new("L", a.size)
+    mask.putdata([edge(x, y) for y in range(h) for x in range(w)])
+    a = ImageChops.multiply(a, mask)
     out = c.convert("RGBA"); out.putalpha(a)
     return out
 

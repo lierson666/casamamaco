@@ -19,9 +19,8 @@ export default async function Integracoes() {
   return (
     <div className="flex max-w-xl flex-col gap-6">
       <header>
-        <p className="eyebrow">Integrações</p>
-        <h1 className="mt-2 font-display text-[clamp(2rem,9vw,3rem)] uppercase leading-none">Inter PJ</h1>
-        <p className="mt-2 text-sm text-muted">Painel separado, só leitura: saldo e extrato da conta PJ. Nada aqui entra nos gastos da casa.</p>
+        <h1 className="h1">Integrações</h1>
+        <p className="mt-2 text-sm text-muted">Inter PJ: painel separado, só leitura, com saldo e extrato da conta PJ. Nada aqui entra nos gastos da casa.</p>
       </header>
 
       <section className="card p-5">
@@ -63,7 +62,7 @@ export default async function Integracoes() {
       )}
 
       <section className="card p-5">
-        <h2 className="mb-1 font-display text-2xl uppercase">{configured ? "Trocar credenciais" : "Como ligar"}</h2>
+        <h2 className="h2 mb-1">{configured ? "Trocar credenciais" : "Como ligar"}</h2>
         <ol className="mb-4 list-decimal space-y-1 pl-5 text-sm text-muted">
           <li>No Internet Banking do Inter (PJ), abra <b className="text-ink">Integrações / APIs</b> e crie uma <b className="text-ink">nova integração</b>.</li>
           <li>Marque só a permissão de <b className="text-ink">extrato (leitura)</b>. Não marque pagamento nem boleto.</li>

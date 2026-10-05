@@ -13,7 +13,7 @@ export default async function Usuarios() {
   return (
     <div className="flex max-w-xl flex-col gap-8">
       <header>
-        <h1 className="font-display text-[clamp(2rem,9vw,3rem)] leading-none">Usuários</h1>
+        <h1 className="h1">Usuários</h1>
       </header>
 
       <section>

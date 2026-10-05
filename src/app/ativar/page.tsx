@@ -30,8 +30,7 @@ export default async function Ativar({ searchParams }: PageProps<"/ativar">) {
       <div className="flex flex-col items-start gap-5">
         <Seal size={80} />
         <div>
-          <p className="eyebrow">Casa Mamaco</p>
-          <h1 className="mt-2 font-display text-4xl uppercase leading-none">Ativar acesso</h1>
+          <h1 className="h1">Ativar acesso</h1>
           {user && <p className="mt-2 text-sm text-muted">Olá, {user.name}. Vamos proteger a sua conta em três passos.</p>}
         </div>
       </div>

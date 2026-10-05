@@ -38,8 +38,8 @@ export default async function Orcamento({ searchParams }: PageProps<"/orcamento"
     <div className="flex flex-col gap-6">
       <header className="flex flex-wrap items-end justify-between gap-4">
         <div>
-          <p className="eyebrow">Orçamento</p>
-          <h1 className="mt-2 font-display text-[clamp(2rem,9vw,3rem)] uppercase leading-none">{monthLabel(month)}</h1>
+          <h1 className="h1">Orçamento</h1>
+          <p className="mt-0.5 text-muted first-letter:uppercase">{monthLabel(month)}</p>
         </div>
         <MonthNav base="/orcamento" month={month} />
       </header>
@@ -50,10 +50,10 @@ export default async function Orcamento({ searchParams }: PageProps<"/orcamento"
           <p className="mt-2 text-sm text-muted">Nenhum teto definido ainda. Defina por categoria abaixo, ou peça uma sugestão pelo histórico.</p>
         ) : (
           <>
-            <p className="mt-1 font-display text-[clamp(2rem,9vw,2.8rem)] tabular-nums">
+            <p className="mt-1 kpi">
               {formatBRL(spentUnderLimit)} <span className="text-lg text-muted">de {formatBRL(totalLimit)}</span>
             </p>
-            <div className="mt-3 h-2 overflow-hidden rounded-full bg-surface-2" role="progressbar" aria-valuenow={Math.min(overall.pct, 100)} aria-valuemin={0} aria-valuemax={100} aria-label="Orçamento do mês">
+            <div className="mt-3 h-2 overflow-hidden border border-line bg-surface-2" role="progressbar" aria-valuenow={Math.min(overall.pct, 100)} aria-valuemin={0} aria-valuemax={100} aria-label="Orçamento do mês">
               <div className={`h-full ${bar[overall.level]}`} style={{ width: `${Math.min(overall.pct, 100)}%` }} />
             </div>
             <p className="mt-2 text-xs text-muted">
@@ -85,7 +85,7 @@ export default async function Orcamento({ searchParams }: PageProps<"/orcamento"
                   {r.limit > 0 && <span className="text-muted"> / {formatBRL(r.limit)}</span>}
                 </span>
               </div>
-              <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-surface-2" aria-hidden>
+              <div className="mt-2 h-1.5 overflow-hidden border border-line bg-surface-2" aria-hidden>
                 <div className={`h-full ${bar[r.status.level]}`} style={{ width: `${Math.min(r.status.pct, 100)}%` }} />
               </div>
               <details className="mt-2">

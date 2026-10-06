@@ -16,8 +16,9 @@ export async function proxy(request: NextRequest) {
 }
 
 // Arquivos estáticos e do PWA (manifest, ícones) passam sem login.
+// /vivace é o site de teste da Vivace (estático, em public/vivace).
 export const config = {
   matcher: [
-    "/((?!_next/static|_next/image|favicon.ico|icon.png|apple-icon.png|manifest.webmanifest|icons/|kv/).*)",
+    "/((?!_next/static|_next/image|favicon.ico|icon.png|apple-icon.png|manifest.webmanifest|icons/|kv/|vivace(?:/|$)).*)",
   ],
 };

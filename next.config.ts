@@ -2,6 +2,8 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   serverExternalPackages: ["better-sqlite3"],
+  // Upload de várias imagens de uma vez (stickers).
+  experimental: { serverActions: { bodySizeLimit: "40mb" }, proxyClientMaxBodySize: "40mb" },
   async rewrites() {
     return [{ source: "/vivace", destination: "/vivace/index.html" }];
   },

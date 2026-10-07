@@ -1,0 +1,250 @@
+[
+ {
+  "cat": "KIT ROLDANA",
+  "name": "Kit Veneto \u0003s/ Regulagem",
+  "img": "kit-roldana-kit-veneto-s-regulagem.webp",
+  "w": 442,
+  "h": 225,
+  "extra": null
+ },
+ {
+  "cat": "KIT ROLDANA",
+  "name": "Kit Veneto \u0003c/ Regulagem",
+  "img": "kit-roldana-kit-veneto-c-regulagem.webp",
+  "w": 415,
+  "h": 217,
+  "extra": null
+ },
+ {
+  "cat": "KIT ROLDANA",
+  "name": "Kit Siena",
+  "img": "kit-roldana-kit-siena.webp",
+  "w": 419,
+  "h": 222,
+  "extra": null
+ },
+ {
+  "cat": "KIT ROLDANA",
+  "name": "Kit Verona",
+  "img": "kit-roldana-kit-verona.webp",
+  "w": 441,
+  "h": 219,
+  "extra": null
+ },
+ {
+  "cat": "KIT ROLDANA",
+  "name": "Kit Sorrento",
+  "img": "kit-roldana-kit-sorrento.webp",
+  "w": 434,
+  "h": 229,
+  "extra": null
+ },
+ {
+  "cat": "KIT ROLDANA",
+  "name": "Kit Napoli",
+  "img": "kit-roldana-kit-napoli.webp",
+  "w": 448,
+  "h": 201,
+  "extra": null
+ },
+ {
+  "cat": "KIT BATENTE",
+  "name": "Kit Veneto \u0003",
+  "img": "kit-batente-kit-veneto.webp",
+  "w": 447,
+  "h": 231,
+  "extra": null
+ },
+ {
+  "cat": "KIT BATENTE",
+  "name": "Kit Siena",
+  "img": "kit-batente-kit-siena.webp",
+  "w": 373,
+  "h": 247,
+  "extra": null
+ },
+ {
+  "cat": "KIT BATENTE",
+  "name": "Kit Napoli",
+  "img": "kit-batente-kit-napoli.webp",
+  "w": 417,
+  "h": 235,
+  "extra": null
+ },
+ {
+  "cat": "KIT BATENTE",
+  "name": "Kit Sorrento",
+  "img": "kit-batente-kit-sorrento.webp",
+  "w": 407,
+  "h": 248,
+  "extra": null
+ },
+ {
+  "cat": "FECHADURAS",
+  "name": "Fechadura Leito",
+  "img": "fechaduras-fechadura-leito.webp",
+  "w": 172,
+  "h": 250,
+  "extra": null
+ },
+ {
+  "cat": "FECHADURAS",
+  "name": "Fechadura Vidro-Vidro",
+  "img": "fechaduras-fechadura-vidro-vidro.webp",
+  "w": 371,
+  "h": 215,
+  "extra": null
+ },
+ {
+  "cat": "FECHADURAS",
+  "name": "Fechadura Leito c/ Contra",
+  "img": "fechaduras-fechadura-leito-c-contra.webp",
+  "w": 263,
+  "h": 222,
+  "extra": null
+ },
+ {
+  "cat": "APARADORES",
+  "name": "Aparador para vidros",
+  "img": "aparadores-aparador-para-vidros.webp",
+  "w": 482,
+  "h": 227,
+  "extra": null
+ },
+ {
+  "cat": "APARADORES",
+  "name": "Kit Aparador para Vidros",
+  "img": "aparadores-kit-aparador-para-vidros.webp",
+  "w": 263,
+  "h": 233,
+  "extra": "Kit Aparador \u0003para Vidros  Suporte para manter o vidro aberto fabricado em alumínio e inox. disponível nos tamanhos 20cm, 35cm e 55cm cores: preto, banco e fosco  Kit Aparador para Vidros  Apenas as peças avulsas para o suporte fabricado em alumínio disponível nas cores: preto, banco e fosco"
+ },
+ {
+  "cat": "Saída de Roldanas",
+  "name": "Saída de Roldana Bari",
+  "img": "saida-de-roldanas-saida-de-roldana-bari.webp",
+  "w": 388,
+  "h": 237,
+  "extra": null
+ },
+ {
+  "cat": "Saída de Roldanas",
+  "name": "Kit Saída Ravena",
+  "img": "saida-de-roldanas-kit-saida-ravena.webp",
+  "w": 386,
+  "h": 235,
+  "extra": null
+ },
+ {
+  "cat": "Saída de Roldanas",
+  "name": "Kit Anti-Queda",
+  "img": "saida-de-roldanas-kit-anti-queda.webp",
+  "w": 284,
+  "h": 262,
+  "extra": null
+ },
+ {
+  "cat": "Saída de Roldanas",
+  "name": "Chapa Guia",
+  "img": "saida-de-roldanas-chapa-guia.webp",
+  "w": 395,
+  "h": 201,
+  "extra": null
+ },
+ {
+  "cat": "Saída de Roldanas",
+  "name": "Acabamento Pino Guia",
+  "img": "saida-de-roldanas-acabamento-pino-guia.webp",
+  "w": 417,
+  "h": 180,
+  "extra": null
+ },
+ {
+  "cat": "Saída de Roldanas",
+  "name": "Acabamento de Roldana Inferior",
+  "img": "saida-de-roldanas-acabamento-de-roldana-inferior.webp",
+  "w": 377,
+  "h": 186,
+  "extra": null
+ },
+ {
+  "cat": "ACABAMENTOS",
+  "name": "Tampa de Leito",
+  "img": "acabamentos-tampa-de-leito.webp",
+  "w": 394,
+  "h": 224,
+  "extra": null
+ },
+ {
+  "cat": "ACABAMENTOS",
+  "name": "Limitador para Vidros",
+  "img": "acabamentos-limitador-para-vidros.webp",
+  "w": 334,
+  "h": 211,
+  "extra": null
+ },
+ {
+  "cat": "ACABAMENTOS",
+  "name": "Borracha em V",
+  "img": "acabamentos-borracha-em-v.webp",
+  "w": 253,
+  "h": 274,
+  "extra": null
+ },
+ {
+  "cat": "ACABAMENTOS",
+  "name": "Borracha de Ângulo",
+  "img": "acabamentos-borracha-de-angulo.webp",
+  "w": 352,
+  "h": 217,
+  "extra": null
+ },
+ {
+  "cat": "ACABAMENTOS",
+  "name": "Escova adesiva \u0003Vedação 7×5",
+  "img": "acabamentos-escova-adesiva-vedacao-75.webp",
+  "w": 226,
+  "h": 260,
+  "extra": null
+ },
+ {
+  "cat": "ACABAMENTOS",
+  "name": "Escova adesiva \u0003Vedação 5×8",
+  "img": "acabamentos-escova-adesiva-vedacao-58.webp",
+  "w": 251,
+  "h": 239,
+  "extra": null
+ },
+ {
+  "cat": "Estacionamentos para Vidros",
+  "name": "Antiqueda",
+  "img": "estacionamentos-para-vidros-antiqueda.webp",
+  "w": 212,
+  "h": 226,
+  "extra": null
+ },
+ {
+  "cat": "Estacionamentos para Vidros",
+  "name": "Duplo",
+  "img": "estacionamentos-para-vidros-duplo.webp",
+  "w": 254,
+  "h": 193,
+  "extra": null
+ },
+ {
+  "cat": "Estacionamentos para Vidros",
+  "name": "Simples",
+  "img": "estacionamentos-para-vidros-simples.webp",
+  "w": 273,
+  "h": 170,
+  "extra": null
+ },
+ {
+  "cat": "Estacionamentos para Vidros",
+  "name": "Simples Alumínio",
+  "img": "estacionamentos-para-vidros-simples-aluminio.webp",
+  "w": 304,
+  "h": 176,
+  "extra": null
+ }
+]
